@@ -1,23 +1,19 @@
+import 'package:device_preview/device_preview.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:sams_dashboard/app_initializer.dart';
+import 'package:sams_dashboard/my_app.dart';
 
-void main() {
-  runApp(const SAMSDashboard());
-}
+void main() async {
+  // Ensure Flutter binding is initialized
+  WidgetsFlutterBinding.ensureInitialized();
+  // Initialize app services
+  await AppInitializer.init();
 
-class SAMSDashboard extends StatelessWidget {
-  const SAMSDashboard({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(home: MyHomePage());
-  }
-}
-
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold();
-  }
+  runApp(
+    DevicePreview(
+      enabled: kReleaseMode ? false : true,
+      builder: (context) => const MyApp(),
+    ),
+  );
 }
