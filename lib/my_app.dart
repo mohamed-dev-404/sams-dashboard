@@ -11,66 +11,45 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-      // Set default design size based on initial screen width before context is available
-      designSize: _getInitialDesignSize(),
+      // Use web design size only
+      designSize: SizeConfig.webBaseSize,
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
         return MaterialApp.router(
-          title: 'SAMS App',
+          title: 'SAMS Dashboard',
           routerConfig: AppRouter.appRouter,
           theme: AppTheme.getAppTheme(),
           themeMode: ThemeMode.light,
           debugShowCheckedModeBanner: false,
-
-          // DevicePreview configuration
+          // DevicePreview configuration (optional - remove if not needed for testing)
           locale: DevicePreview.locale(context),
-
-          // This builder wraps EVERY screen in the app
           builder: (context, widget) {
-            // 1. Wrap with DevicePreview builder first
+            // 1. Wrap with DevicePreview builder first (optional)
             widget = DevicePreview.appBuilder(context, widget);
-
-            // 2. Update responsive sizing when layout changes
-            // Important for web when user resizes the browser window
+            
+            // 2. Initialize ScreenUtil with web design size
             ScreenUtil.init(
               context,
-              designSize: SizeConfig.getDesignSize(context),
+              designSize: SizeConfig.webBaseSize,
             );
-
-            // 3. Get system MediaQuery data (includes user's font size settings)
+            
+            // 3. Get system MediaQuery data
             final systemData = MediaQuery.of(context);
-
-            // 4. Create modified data - lock text scaling to maintain design consistency
-            // This forces all text to ignore the system font size settings
+            
+            // 4. Lock text scaling to maintain design consistency
             final modifiedData = systemData.copyWith(
               textScaler: const TextScaler.linear(1.0),
             );
-
+            
             // 5. Provide modified data to all screens
             return MediaQuery(
               data: modifiedData,
-              child: widget, // <- Your actual screens go here (all routes)
+              child: widget,
             );
           },
         );
       },
     );
-  }
-
-  /// Get initial design size before we have context
-  /// Checks actual screen width to determine if mobile or web layout
-  Size _getInitialDesignSize() {
-    // Access the physical window directly
-    final window = WidgetsBinding.instance.platformDispatcher.views.first;
-
-    // Calculate logical width (physical pixels ÷ pixel density)
-    // Its considered width in pixels
-    final width = window.physicalSize.width / window.devicePixelRatio;
-
-    // Return appropriate design size based on screen width
-    return width <= SizeConfig.mobileBreakpoint
-        ? SizeConfig.mobileBaseSize
-        : SizeConfig.webBaseSize;
   }
 }
