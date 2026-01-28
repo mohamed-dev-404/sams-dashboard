@@ -28,7 +28,6 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  connectivity: ^3.0.6
   connectivity_plus: ^6.0.5
   cupertino_icons: ^1.0.8
   dartz: ^0.10.1
