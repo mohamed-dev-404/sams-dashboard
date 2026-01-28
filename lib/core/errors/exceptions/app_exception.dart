@@ -1,4 +1,4 @@
-import 'package:sams_app/core/errors/models/error_model.dart';
+import 'package:sams_dashboard/core/errors/models/error_model.dart';
 
 abstract class AppException implements Exception {
   final ErrorModel errorModel;

@@ -1,7 +1,7 @@
 //! Funcion that handle Dio Exceptions and throw suitable ApiException on each case of Dio Exceptions
 import 'package:dio/dio.dart';
-import 'package:sams_app/core/errors/exceptions/api_exception.dart';
-import 'package:sams_app/core/errors/models/error_model.dart';
+import 'package:sams_dashboard/core/errors/exceptions/api_exception.dart';
+import 'package:sams_dashboard/core/errors/models/error_model.dart';
 
 void handleDioExceptions(DioException e) {
   final String errorMessage;

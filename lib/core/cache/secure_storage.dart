@@ -1,5 +1,5 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:sams_app/core/helper/app_logger.dart';
+import 'package:sams_dashboard/core/helper/app_logger.dart';
 
 ///! ===================================================
 ///! SecureStorageService

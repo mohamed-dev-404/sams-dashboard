@@ -1,4 +1,4 @@
-import 'package:sams_app/core/utils/constants/api_keys.dart';
+import 'package:sams_dashboard/core/utils/constants/api_keys.dart';
 
 class ErrorModel {
   final String errorMessage;
