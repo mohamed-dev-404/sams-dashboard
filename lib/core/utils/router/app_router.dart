@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sams_dashboard/core/utils/router/build_route.dart';
 import 'package:sams_dashboard/core/utils/router/routes_name.dart';
 import 'package:sams_dashboard/core/widgets/general_error_page.dart';
+import 'package:sams_dashboard/features/home/presentation/views/home_view.dart';
 
 class AppRouter {
   AppRouter._();
@@ -11,14 +13,15 @@ class AppRouter {
 
   static final appRouter = GoRouter(
     navigatorKey: navigatorKey,
-    initialLocation: RoutesName.splash,
+    initialLocation: RoutesName.home,
     errorBuilder: (context, state) => const GeneralErrorPage(),
     routes: [
-      /// buildRoute(
-      ///   name: RoutesName.splash,
-      ///   path: RoutesName.splash,
-      ///   builder: (context, state) => const SplashView(),
-      /// ),
+      buildRoute(
+        name: RoutesName.home,
+        path: RoutesName.home,
+        builder: (context, state) => const HomeView(),
+      ),
+
       /// buildRoute(
       ///   name: RoutesName.homeView,
       ///   path: RoutesName.homeView,

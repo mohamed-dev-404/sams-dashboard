@@ -1,5 +1,4 @@
 import 'package:device_preview/device_preview.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:sams_dashboard/app_initializer.dart';
 import 'package:sams_dashboard/my_app.dart';
@@ -12,7 +11,7 @@ void main() async {
 
   runApp(
     DevicePreview(
-      enabled: kReleaseMode ? false : true,
+      enabled: false, //?kReleaseMode ? false : true,
       builder: (context) => const MyApp(),
     ),
   );
