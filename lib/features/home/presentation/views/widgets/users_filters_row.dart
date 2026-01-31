@@ -146,7 +146,10 @@ class ClearFiltersButton extends StatelessWidget {
     return TextButton.icon(
       onPressed: onPressed,
       icon: const Icon(Icons.clear),
-      label: const Text('Clear Filters'),
+      label: Text(
+        'Clear Filters',
+        style: AppStyles.webAgBodyRegular,
+      ),
     );
   }
 }
