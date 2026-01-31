@@ -11,10 +11,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-      // Use web design size only
       designSize: SizeConfig.webBaseSize,
       minTextAdapt: true,
       splitScreenMode: true,
+      // Forces ScreenUtil to recalculate and rebuild the UI on every window resize
+      rebuildFactor: (old, data) => RebuildFactors.always(old, data),
       builder: (context, child) {
         return MaterialApp.router(
           title: 'SAMS Dashboard',
@@ -22,29 +23,16 @@ class MyApp extends StatelessWidget {
           theme: AppTheme.getAppTheme(),
           themeMode: ThemeMode.light,
           debugShowCheckedModeBanner: false,
-          // DevicePreview configuration (optional - remove if not needed for testing)
           locale: DevicePreview.locale(context),
           builder: (context, widget) {
-            // 1. Wrap with DevicePreview builder first (optional)
+            // Integrate DevicePreview builder for screen testing
             widget = DevicePreview.appBuilder(context, widget);
-            
-            // 2. Initialize ScreenUtil with web design size
-            ScreenUtil.init(
-              context,
-              designSize: SizeConfig.webBaseSize,
-            );
-            
-            // 3. Get system MediaQuery data
-            final systemData = MediaQuery.of(context);
-            
-            // 4. Lock text scaling to maintain design consistency
-            final modifiedData = systemData.copyWith(
-              textScaler: const TextScaler.linear(1.0),
-            );
-            
-            // 5. Provide modified data to all screens
+
+            // Lock text scaling to ensure design consistency regardless of system settings
             return MediaQuery(
-              data: modifiedData,
+              data: MediaQuery.of(context).copyWith(
+                textScaler: const TextScaler.linear(1.0),
+              ),
               child: widget,
             );
           },
