@@ -4,50 +4,43 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class AppStyles {
   AppStyles._();
 
-  // =========================================================
-  // 🔹 FONT FAMILY USED IN APP
-  // =========================================================
   static const String _fontFamily = 'Poppins';
 
   // =========================================================
-  // 🟣 MOBILE — TITLES
+  // 🟣 MOBILE — TITLES (Converted to Getters)
   // =========================================================
 
-  /// Large Title
-  static TextStyle mobileTitleLargeMd = TextStyle(
+  static TextStyle get mobileTitleLargeMd => TextStyle(
     fontSize: 32.sp,
     fontWeight: FontWeight.w500,
     fontFamily: _fontFamily,
   );
 
-  /// Medium Title
-  static TextStyle mobileTitleMediumSb = TextStyle(
+  static TextStyle get mobileTitleMediumSb => TextStyle(
     fontSize: 24.sp,
     fontWeight: FontWeight.w600,
     fontFamily: _fontFamily,
   );
 
-  static TextStyle mobileTitleMediumRg = TextStyle(
+  static TextStyle get mobileTitleMediumRg => TextStyle(
     fontSize: 24.sp,
     fontWeight: FontWeight.w400,
     fontFamily: _fontFamily,
   );
 
-  static TextStyle mobileTitleMediumLight = TextStyle(
+  static TextStyle get mobileTitleMediumLight => TextStyle(
     fontSize: 24.sp,
     fontWeight: FontWeight.w300,
     fontFamily: _fontFamily,
   );
 
-  /// Small Title
-  static TextStyle mobileTitleSmallSb = TextStyle(
+  static TextStyle get mobileTitleSmallSb => TextStyle(
     fontSize: 20.sp,
     fontWeight: FontWeight.w600,
     fontFamily: _fontFamily,
   );
 
-  /// XSmall Title
-  static TextStyle mobileTitleXsmallMd = TextStyle(
+  static TextStyle get mobileTitleXsmallMd => TextStyle(
     fontSize: 14.sp,
     fontWeight: FontWeight.w500,
     fontFamily: _fontFamily,
@@ -57,13 +50,13 @@ class AppStyles {
   // 🔵 MOBILE — LABELS
   // =========================================================
 
-  static TextStyle mobileLabelMediumMd = TextStyle(
+  static TextStyle get mobileLabelMediumMd => TextStyle(
     fontSize: 16.sp,
     fontWeight: FontWeight.w500,
     fontFamily: _fontFamily,
   );
 
-  static TextStyle mobileLabelMediumRg = TextStyle(
+  static TextStyle get mobileLabelMediumRg => TextStyle(
     fontSize: 16.sp,
     fontWeight: FontWeight.w400,
     fontFamily: _fontFamily,
@@ -73,7 +66,7 @@ class AppStyles {
   // 🟢 MOBILE — BUTTONS
   // =========================================================
 
-  static TextStyle mobileButtonMediumSb = TextStyle(
+  static TextStyle get mobileButtonMediumSb => TextStyle(
     fontSize: 22.sp,
     fontWeight: FontWeight.w600,
     fontFamily: _fontFamily,
@@ -83,82 +76,73 @@ class AppStyles {
   // 🟡 MOBILE — BODY TEXT
   // =========================================================
 
-  /// Small Body
-  static TextStyle mobileBodySmallMd = TextStyle(
+  static TextStyle get mobileBodySmallMd => TextStyle(
     fontSize: 14.sp,
     fontWeight: FontWeight.w500,
     fontFamily: _fontFamily,
   );
 
-  static TextStyle mobileBodySmallRg = TextStyle(
+  static TextStyle get mobileBodySmallRg => TextStyle(
     fontSize: 14.sp,
     fontWeight: FontWeight.w400,
     fontFamily: _fontFamily,
   );
 
-  static TextStyle mobileBodySmallSb = TextStyle(
+  static TextStyle get mobileBodySmallSb => TextStyle(
     fontSize: 14.sp,
     fontWeight: FontWeight.w600,
     fontFamily: _fontFamily,
   );
 
-  /// Large Body
-  static TextStyle mobileBodyLargeRg = TextStyle(
+  static TextStyle get mobileBodyLargeRg => TextStyle(
     fontSize: 18.sp,
     fontWeight: FontWeight.w400,
     fontFamily: _fontFamily,
   );
 
-  static TextStyle mobileBodyLargeSb = TextStyle(
+  static TextStyle get mobileBodyLargeSb => TextStyle(
     fontSize: 18.sp,
     fontWeight: FontWeight.w600,
     fontFamily: _fontFamily,
   );
 
-  static TextStyle mobileBodyLargeMd = TextStyle(
+  static TextStyle get mobileBodyLargeMd => TextStyle(
     fontSize: 18.sp,
     fontWeight: FontWeight.w500,
     fontFamily: _fontFamily,
   );
 
-  /// Extra Sizes
-  static TextStyle mobileBodyXlargeRg = TextStyle(
+  static TextStyle get mobileBodyXlargeRg => TextStyle(
     fontSize: 20.sp,
     fontWeight: FontWeight.w400,
     fontFamily: _fontFamily,
   );
 
-  static TextStyle mobileBodyXXlargeMd = TextStyle(
+  static TextStyle get mobileBodyXXlargeMd => TextStyle(
     fontSize: 24.sp,
     fontWeight: FontWeight.w500,
     fontFamily: _fontFamily,
   );
 
-  /// Medium Body
-  static TextStyle mobileBodyMediumRg = TextStyle(
+  static TextStyle get mobileBodyMediumRg => TextStyle(
     fontSize: 16.sp,
     fontWeight: FontWeight.w400,
     fontFamily: _fontFamily,
   );
 
-  /// XSmall Body
-  static TextStyle mobileBodyXsmallRg = TextStyle(
+  static TextStyle get mobileBodyXsmallRg => TextStyle(
     fontSize: 12.sp,
     fontWeight: FontWeight.w400,
     fontFamily: _fontFamily,
   );
 
-  static TextStyle mobileBodyXsmallMd = TextStyle(
+  static TextStyle get mobileBodyXsmallMd => TextStyle(
     fontSize: 12.sp,
     fontWeight: FontWeight.w500,
     fontFamily: _fontFamily,
   );
 
-  // =========================================================
-  // 🔶 MOBILE — SPECIAL CASES
-  // =========================================================
-
-  static TextStyle mobile17Semibold = TextStyle(
+  static TextStyle get mobile17Semibold => TextStyle(
     fontSize: 17.07.sp,
     fontWeight: FontWeight.w600,
     fontFamily: _fontFamily,
@@ -168,19 +152,19 @@ class AppStyles {
   // 🌍 WEB — TITLES
   // =========================================================
 
-  static TextStyle webTitleLargeMd = TextStyle(
+  static TextStyle get webTitleLargeMd => TextStyle(
     fontSize: 50.sp,
     fontWeight: FontWeight.w500,
     fontFamily: _fontFamily,
   );
 
-  static TextStyle webTitleMediumSb = TextStyle(
+  static TextStyle get webTitleMediumSb => TextStyle(
     fontSize: 40.sp,
     fontWeight: FontWeight.w600,
     fontFamily: _fontFamily,
   );
 
-  static TextStyle webTitleMediumMd = TextStyle(
+  static TextStyle get webTitleMediumMd => TextStyle(
     fontSize: 40.sp,
     fontWeight: FontWeight.w500,
     fontFamily: _fontFamily,
@@ -190,7 +174,7 @@ class AppStyles {
   // 🌍 WEB — LABELS
   // =========================================================
 
-  static TextStyle webLabelMd = TextStyle(
+  static TextStyle get webLabelMd => TextStyle(
     fontSize: 20.sp,
     fontWeight: FontWeight.w500,
     fontFamily: _fontFamily,
@@ -200,13 +184,13 @@ class AppStyles {
   // 🌍 WEB — BODY
   // =========================================================
 
-  static TextStyle webBodySmallSb = TextStyle(
+  static TextStyle get webBodySmallSb => TextStyle(
     fontSize: 20.sp,
     fontWeight: FontWeight.w600,
     fontFamily: _fontFamily,
   );
 
-  static TextStyle webBodySmallRg = TextStyle(
+  static TextStyle get webBodySmallRg => TextStyle(
     fontSize: 20.sp,
     fontWeight: FontWeight.w400,
     fontFamily: _fontFamily,
@@ -216,110 +200,109 @@ class AppStyles {
   // 🌍 WEB — SPECIAL CASES
   // =========================================================
 
-  static TextStyle web30Semibold = TextStyle(
+  static TextStyle get web30Semibold => TextStyle(
     fontSize: 30.sp,
     fontWeight: FontWeight.w600,
     fontFamily: _fontFamily,
   );
 
-  static TextStyle web32Semibold = TextStyle(
+  static TextStyle get web32Semibold => TextStyle(
     fontSize: 32.sp,
     fontWeight: FontWeight.w600,
     fontFamily: _fontFamily,
   );
 
-  static TextStyle web30Regular = TextStyle(
+  static TextStyle get web30Regular => TextStyle(
     fontSize: 30.sp,
     fontWeight: FontWeight.w400,
     fontFamily: _fontFamily,
   );
 
-  static TextStyle web36Light = TextStyle(
+  static TextStyle get web36Light => TextStyle(
     fontSize: 36.sp,
     fontWeight: FontWeight.w300,
     fontFamily: _fontFamily,
   );
 
-  static TextStyle web24Regular = TextStyle(
+  static TextStyle get web24Regular => TextStyle(
     fontSize: 24.sp,
     fontWeight: FontWeight.w400,
     fontFamily: _fontFamily,
   );
 
-  static TextStyle web24Semibold = TextStyle(
+  static TextStyle get web24Semibold => TextStyle(
     fontSize: 24.sp,
     fontWeight: FontWeight.w600,
     fontFamily: _fontFamily,
   );
 
-  static TextStyle web24Medium = TextStyle(
+  static TextStyle get web24Medium => TextStyle(
     fontSize: 24.sp,
     fontWeight: FontWeight.w500,
     fontFamily: _fontFamily,
   );
 
-  static TextStyle web12Medium = TextStyle(
+  static TextStyle get web12Medium => TextStyle(
     fontSize: 12.sp,
     fontWeight: FontWeight.w500,
     fontFamily: _fontFamily,
   );
 
-  static TextStyle web14Regular = TextStyle(
+  static TextStyle get web14Regular => TextStyle(
     fontSize: 14.sp,
     fontWeight: FontWeight.w400,
     fontFamily: _fontFamily,
   );
 
-  static TextStyle web14Medium = TextStyle(
+  static TextStyle get web14Medium => TextStyle(
     fontSize: 14.sp,
     fontWeight: FontWeight.w500,
     fontFamily: _fontFamily,
   );
 
-  static TextStyle web15Regular = TextStyle(
+  static TextStyle get web15Regular => TextStyle(
     fontSize: 15.sp,
     fontWeight: FontWeight.w400,
     fontFamily: _fontFamily,
   );
 
-  static TextStyle web16Medium = TextStyle(
+  static TextStyle get web16Medium => TextStyle(
     fontSize: 16.sp,
     fontWeight: FontWeight.w500,
     fontFamily: _fontFamily,
   );
 
-  static TextStyle web16Semibold = TextStyle(
+  static TextStyle get web16Semibold => TextStyle(
     fontSize: 16.sp,
     fontWeight: FontWeight.w600,
     fontFamily: _fontFamily,
   );
 
-  static TextStyle web40Semibold = TextStyle(
+  static TextStyle get web40Semibold => TextStyle(
     fontSize: 40.sp,
     fontWeight: FontWeight.w600,
     fontFamily: _fontFamily,
   );
 
-  static TextStyle web20Regular = TextStyle(
+  static TextStyle get web20Regular => TextStyle(
     fontSize: 20.sp,
     fontWeight: FontWeight.w400,
     fontFamily: _fontFamily,
   );
 
-  static TextStyle web10Regular = TextStyle(
+  static TextStyle get web10Regular => TextStyle(
     fontSize: 10.sp,
     fontWeight: FontWeight.w400,
     fontFamily: _fontFamily,
   );
 
-  // AG Body
-  static TextStyle webAgBodyBold = TextStyle(
+  static TextStyle get webAgBodyBold => TextStyle(
     fontSize: 14.sp,
     fontWeight: FontWeight.bold,
     fontFamily: _fontFamily,
   );
 
-  static TextStyle webAgBodyRegular = TextStyle(
+  static TextStyle get webAgBodyRegular => TextStyle(
     fontSize: 14.sp,
     fontWeight: FontWeight.w400,
     fontFamily: _fontFamily,
