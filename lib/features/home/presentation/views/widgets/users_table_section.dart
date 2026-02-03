@@ -5,15 +5,15 @@ import 'package:sams_dashboard/core/utils/colors/app_colors.dart';
 import 'package:sams_dashboard/core/utils/styles/app_styles.dart';
 import 'package:sams_dashboard/features/home/data/enum/user_status.dart';
 import 'package:sams_dashboard/features/home/data/models/user_model.dart';
-import 'package:sams_dashboard/features/home/data/user_mock_data.dart';
 import 'package:sams_dashboard/features/home/presentation/views/widgets/role_dropdown.dart';
 import 'package:sams_dashboard/features/home/presentation/views/widgets/user_status_badge.dart';
 
 /// ================= USERS TABLE SECTION =================
 /// Main widget responsible for rendering users data table
 class UsersTableSection extends StatefulWidget {
-  const UsersTableSection({super.key});
+  final List<UserModel> users;
 
+  const UsersTableSection({super.key, required this.users});
   @override
   State<UsersTableSection> createState() => _UsersTableSectionState();
 }
@@ -21,16 +21,10 @@ class UsersTableSection extends StatefulWidget {
 class _UsersTableSectionState extends State<UsersTableSection> {
   int _currentSortIndex = 0; // current sorted column index
   bool _isAscending = true; // sort direction
-  late List<UserModel> _users; // table data source
-
-  @override
-  void initState() {
-    super.initState();
-    _users = getMockUsers(); // load mock data (API later)
-  }
 
   @override
   Widget build(BuildContext context) {
+    final displayUsers = widget.users;
     return DataTable2(
       //* Sorting config
       sortArrowIconColor: AppColors.whiteLight,
@@ -53,10 +47,11 @@ class _UsersTableSectionState extends State<UsersTableSection> {
 
       //* Table structure
       columns: _buildColumns(),
-      rows: List.generate(
-        _users.length,
-        (index) => _buildUserRow(_users[index], index),
-      ),
+      rows: displayUsers
+          .asMap()
+          .entries
+          .map((e) => _buildUserRow(e.value, e.key))
+          .toList(),
     );
   }
 
@@ -130,7 +125,7 @@ class _UsersTableSectionState extends State<UsersTableSection> {
       _currentSortIndex = index;
       _isAscending = asc;
 
-      _users.sort(
+      widget.users.sort(
         (a, b) => asc
             ? getField(a).compareTo(getField(b))
             : getField(b).compareTo(getField(a)),
