@@ -1,7 +1,9 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sams_dashboard/core/utils/colors/app_colors.dart';
 import 'package:sams_dashboard/core/utils/styles/app_styles.dart';
+import 'package:sams_dashboard/features/home/data/enum/user_role.dart';
 
 class AddUserFormBody extends StatefulWidget {
   const AddUserFormBody({super.key});
@@ -12,6 +14,7 @@ class AddUserFormBody extends StatefulWidget {
 
 class _AddUserFormBodyState extends State<AddUserFormBody> {
   //* State variable to hold the selected dropdown value
+  UserRole? _selectedRole;
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +46,27 @@ class _AddUserFormBodyState extends State<AddUserFormBody> {
 
             _buildInputLabel('Academic Email'),
             _buildTextField(hint: 'john@o6u.edu.eg'),
+
+            _buildInputLabel('Role'),
+            //* Custom generic dropdown implementation
+            _CustomDropdownField<UserRole>(
+              value: _selectedRole,
+              hintText: 'Select User Role',
+              items: UserRole.values.map((item) {
+                return DropdownMenuItem<UserRole>(
+                  value: item,
+                  child: Text(
+                    item.label,
+                    style: AppStyles.mobileLabelMediumRg.copyWith(
+                      color: AppColors.whiteDarkHover,
+                    ),
+                  ),
+                );
+              }).toList(),
+              onChanged: (val) => setState(() => _selectedRole = val),
+              validator: (value) =>
+                  value == null ? 'Please select a role' : null,
+            ),
 
             _buildInputLabel('Password'),
             _buildTextField(
@@ -79,6 +103,68 @@ class _AddUserFormBodyState extends State<AddUserFormBody> {
         isDense: true,
         hintText: hint,
       ),
+    );
+  }
+}
+
+//* Private reusable dropdown widget for this file
+class _CustomDropdownField<T> extends StatelessWidget {
+  final T? value;
+  final String hintText;
+  final List<DropdownMenuItem<T>> items;
+  final ValueChanged<T?> onChanged;
+  final String? Function(T?)? validator;
+
+  const _CustomDropdownField({
+    required this.value,
+    required this.hintText,
+    required this.items,
+    required this.onChanged,
+    this.validator,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButtonFormField2<T>(
+      value: value,
+      hint: Text(
+        hintText,
+        style: AppStyles.mobileLabelMediumRg.copyWith(
+          color: AppColors.whiteDarkHover,
+        ),
+      ),
+      decoration: InputDecoration(
+        isDense: true,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15.r),
+          borderSide: const BorderSide(color: AppColors.secondary),
+        ),
+      ),
+      items: items,
+      onChanged: onChanged,
+      iconStyleData: const IconStyleData(
+        icon: Icon(
+          Icons.keyboard_arrow_down_rounded,
+          color: AppColors.whiteDarkHover,
+        ),
+      ),
+      dropdownStyleData: DropdownStyleData(
+        padding: EdgeInsets.zero,
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: AppColors.secondaryLightActive,
+          ),
+          borderRadius: BorderRadius.circular(15.r),
+          color: AppColors.secondaryLight,
+        ),
+        //? Positioning the menu overlay relative to the field
+        offset: const Offset(0, -6),
+      ),
+      menuItemStyleData: MenuItemStyleData(
+        padding: EdgeInsets.symmetric(horizontal: 16.w),
+        height: 48.h,
+      ),
+      validator: validator,
     );
   }
 }
