@@ -51,7 +51,7 @@ class CustomPopupMenuButton<T extends Enum> extends StatelessWidget {
 
         // * Positions menu below the button
         offset: const Offset(0, 45),
-        color: Colors.white,
+        color: AppColors.whiteLight,
 
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
