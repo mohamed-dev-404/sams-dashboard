@@ -41,11 +41,17 @@ class _AddUserFormBodyState extends State<AddUserFormBody> {
             _buildInputLabel('Full Name'),
             _buildTextField(hint: 'e.g. John Doe'),
 
+            SizedBox(height: 16.h),
+
             _buildInputLabel('User ID'),
             _buildTextField(hint: 'e.g. 202202986'),
 
+            SizedBox(height: 16.h),
+
             _buildInputLabel('Academic Email'),
             _buildTextField(hint: 'john@o6u.edu.eg'),
+
+            SizedBox(height: 16.h),
 
             _buildInputLabel('Role'),
             //* Custom generic dropdown implementation
@@ -68,10 +74,14 @@ class _AddUserFormBodyState extends State<AddUserFormBody> {
                   value == null ? 'Please select a role' : null,
             ),
 
+            SizedBox(height: 16.h),
+
             _buildInputLabel('Password'),
             _buildTextField(
               hint: '••••••••',
             ),
+
+            SizedBox(height: 16.h),
 
             _buildInputLabel('Confirm Password'),
             _buildTextField(

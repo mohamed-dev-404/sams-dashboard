@@ -13,36 +13,40 @@ class AddUserView extends StatelessWidget {
       //* Main Scaffold for the Add User screen
       body: Container(
         margin: EdgeInsets.only(left: 80.w, right: 80.w, top: 20.h),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            //! Page Header Title
-            Text(
-              'Add User',
-              style: AppStyles.webTitleMediumMd.copyWith(
-                color: AppColors.primaryDarkHover,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              //! Page Header Title
+              _addUserViewHeader(),
+              SizedBox(height: 16.h),
+
+              //* The Form Container (contains the actual input fields)
+              const AddUserFormBody(),
+
+              SizedBox(height: 24.h),
+
+              // TODO: Connect this button to the AddUser Cubit/Logic
+              ElevatedButton(
+                onPressed: () {
+                  //! Validate and Submit Logic
+                },
+                child: const Text('Add User'),
               ),
-            ),
-
-            Flexible(child: SizedBox(height: 16.h)),
-
-            //* The Form Container (contains the actual input fields)
-            const AddUserFormBody(),
-
-            Flexible(child: SizedBox(height: 24.h)),
-
-            // TODO: Connect this button to the AddUser Cubit/Logic
-            ElevatedButton(
-              onPressed: () {
-                //! Validate and Submit Logic
-              },
-              child: const Text('Add User'),
-            ),
-
-            Flexible(child: SizedBox(height: 24.h)),
-          ],
+              SizedBox(height: 24.h),
+            ],
+          ),
         ),
+      ),
+    );
+  }
+
+  Text _addUserViewHeader() {
+    return Text(
+      'Add User',
+      style: AppStyles.webTitleMediumMd.copyWith(
+        color: AppColors.primaryDarkHover,
       ),
     );
   }
