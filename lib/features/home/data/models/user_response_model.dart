@@ -1,3 +1,5 @@
+import 'package:sams_dashboard/core/utils/constants/api_keys.dart';
+
 import 'user_model.dart';
 import 'user_pagination_model.dart';
 
@@ -14,11 +16,11 @@ class UserResponseModel {
 
   factory UserResponseModel.fromJson(Map<String, dynamic> json) {
     return UserResponseModel(
-      status: json['status'] as String,
-      users: (json['data'] as List)
+      status: json[ApiKeys.status] as String,
+      users: (json[ApiKeys.data] as List)
           .map((item) => UserModel.fromJson(item as Map<String, dynamic>))
           .toList(),
-      pagination: UserPaginationModel.fromJson(json['pagination']),
+      pagination: UserPaginationModel.fromJson(json[ApiKeys.pagination]),
     );
   }
 }

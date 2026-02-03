@@ -1,8 +1,29 @@
 class ApiKeys {
   ApiKeys._();
 
-  static String error = 'error';
-  static String message = 'message';
+  //? Common Keys
+  static const String status = 'status';
+  static const String data = 'data';
+  static const String message = 'message';
+
+  //? User Model Keys
+  static const String id = '_id';
+  static const String name = 'name';
+  static const String academicEmail = 'academicEmail';
+  static const String academicId = 'academicId';
+  static const String profilePic = 'profilePic';
+  static const String isActive = 'isActive';
+  static const String role = 'role';
+
+  //? Pagination Keys
+  static const String pagination = 'pagination';
+  static const String totalElements = 'totalElements';
+  static const String currentPage = 'currentPage';
+  static const String size = 'size';
+  static const String totalPages = 'totalPages';
+  static const String hasNextPage = 'hasNextPage';
+  static const String hasPrevPage = 'hasPrevPage';
+
   // static String validationMessage = 'validationErrors';
   // static String errorMessage = 'businessErrorDescription';
   // static String email = 'email';
