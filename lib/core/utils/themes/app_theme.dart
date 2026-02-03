@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sams_dashboard/core/utils/colors/app_colors.dart';
 import 'package:sams_dashboard/core/utils/styles/app_styles.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AppTheme {
   AppTheme._();
@@ -21,13 +22,13 @@ class AppTheme {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style:
             ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+              padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 24.w),
               backgroundColor: AppColors.secondary,
               foregroundColor: AppColors.whiteLight,
               disabledBackgroundColor: AppColors.primaryLight,
               disabledForegroundColor: AppColors.primaryDark,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
+                borderRadius: BorderRadius.circular(15.r),
               ),
               textStyle: AppStyles.mobileButtonMediumSb,
             ).copyWith(
@@ -51,32 +52,32 @@ class AppTheme {
         prefixIconColor: AppColors.whiteDarkHover,
         suffixIconColor: AppColors.primaryDark,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(15.r),
           borderSide: const BorderSide(
             color: AppColors.secondaryLight,
           ),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(15.r),
           borderSide: const BorderSide(
             color: AppColors.greenLightActive,
           ),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(15.r),
           borderSide: const BorderSide(
             color: AppColors.secondary,
           ),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(15.r),
           borderSide: const BorderSide(
             color: AppColors.red,
           ),
         ),
         fillColor: WidgetStateColor.resolveWith((states) {
           if (states.contains(WidgetState.focused)) {
-            return AppColors.secondaryLightActive;
+            return AppColors.secondaryLightHover;
           } else if (states.contains(WidgetState.error)) {
             return AppColors.redLightHover;
           }
@@ -101,9 +102,9 @@ class AppTheme {
         foregroundColor: AppColors.primaryDarkHover,
         centerTitle: true,
         elevation: 0,
-        iconTheme: const IconThemeData(
+        iconTheme: IconThemeData(
           color: AppColors.primaryDark,
-          size: 28,
+          size: 28.w,
         ),
         titleTextStyle: AppStyles.mobileTitleLargeMd.copyWith(
           color: AppColors.primaryDark,
