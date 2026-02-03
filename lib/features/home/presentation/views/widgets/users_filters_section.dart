@@ -1,5 +1,7 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:sams_dashboard/core/utils/router/routes_name.dart';
 import 'package:sams_dashboard/features/home/data/enum/user_role.dart';
 import 'package:sams_dashboard/features/home/data/enum/user_status.dart';
 import 'package:sams_dashboard/features/home/presentation/views/widgets/users_filters_row.dart';
@@ -46,6 +48,7 @@ class _UsersFiltersSectionState extends State<UsersFiltersSection> {
       },
 
       onAddUserPressed: () {
+        context.push(RoutesName.addUser);
         log('Test: Navigate to Add User Screen');
       },
     );

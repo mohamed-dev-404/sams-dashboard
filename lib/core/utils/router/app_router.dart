@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:sams_dashboard/core/utils/router/build_route.dart';
 import 'package:sams_dashboard/core/utils/router/routes_name.dart';
 import 'package:sams_dashboard/core/widgets/general_error_page.dart';
+import 'package:sams_dashboard/features/home/presentation/views/add_user_view.dart';
 import 'package:sams_dashboard/features/home/presentation/views/home_view.dart';
 
 class AppRouter {
@@ -20,6 +21,11 @@ class AppRouter {
         name: RoutesName.home,
         path: RoutesName.home,
         builder: (context, state) => const HomeView(),
+      ),
+      buildRoute(
+        name: RoutesName.addUser,
+        path: RoutesName.addUser,
+        builder: (context, state) => const AddUserView(),
       ),
 
       /// buildRoute(
