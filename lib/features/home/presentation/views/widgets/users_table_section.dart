@@ -108,7 +108,11 @@ class _UsersTableSectionState extends State<UsersTableSection> {
         DataCell(
           RoleDropdown(
             currentRole: user.role,
-            onChanged: (newRole) => setState(() => user.role = newRole),
+            onChanged: (newRole) {
+              return setState(() {
+                //              user.role = newRole ;
+              });
+            },
           ),
         ),
       ],
@@ -193,7 +197,7 @@ class _StatusActionCell extends StatelessWidget {
             inactiveThumbColor: AppColors.red,
             activeThumbColor: AppColors.secondary,
             onChanged: (value) {
-              user.status = value ? UserStatus.active : UserStatus.inactive;
+              // user.status = value ? UserStatus.active : UserStatus.inactive;
               onToggle(); // refresh UI
             },
           ),

@@ -129,6 +129,8 @@ class DioConsumer extends ApiConsumer {
         e,
       ); // throw suitable ApiException based on DioException type
     }
-    throw ApiException(errorModel: ErrorModel(errorMessage: e.toString()));
+    throw ApiException(
+      errorModel: ErrorModel(status: 'fail', message: e.toString()),
+    );
   }
 }

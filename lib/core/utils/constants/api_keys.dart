@@ -5,6 +5,7 @@ class ApiKeys {
   static const String status = 'status';
   static const String data = 'data';
   static const String message = 'message';
+  static const String validationErrors = 'validationErrors';
 
   //? User Model Keys
   static const String id = '_id';
