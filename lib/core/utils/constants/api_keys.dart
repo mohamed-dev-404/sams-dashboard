@@ -25,7 +25,20 @@ class ApiKeys {
   static const String hasNextPage = 'hasNextPage';
   static const String hasPrevPage = 'hasPrevPage';
 
-  // static String validationMessage = 'validationErrors';
+  //? Fetch Users Params keys
+  static const String page = 'page';
+  static const String sortBy = 'sortBy';
+  static const String sortOrder = 'sortOrder';
+  static const String roleId = 'roleId';
+  static const String search = 'search';
+
+  //? Fetch Users Params Values
+  static const String createdAt = 'createdAt';
+  static const String desc = 'desc';
+
+  //? Auth Keys
+  static String authorization = 'Authorization';
+  static String password = 'password';
   // static String errorMessage = 'businessErrorDescription';
   // static String email = 'email';
   // static String password = 'password';
