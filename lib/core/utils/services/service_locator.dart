@@ -3,12 +3,14 @@ import 'package:get_it/get_it.dart';
 import 'package:sams_dashboard/core/network/api_consumer.dart';
 import 'package:sams_dashboard/core/network/dio_consumer.dart';
 
-GetIt getIt = GetIt.instance;
+final GetIt getIt = GetIt.instance;
 
 void setupServiceLocator() {
-  getIt.registerSingleton<ApiConsumer>(DioConsumer(Dio()));
-  // getIt.registerSingleton<HomeRepoImpl>(
-  //   HomeRepoImpl(apiService: getIt.get<ApiService>()),
+  getIt.registerLazySingleton<Dio>(() => Dio());
+
+  getIt.registerLazySingleton<ApiConsumer>(() => DioConsumer(getIt<Dio>()));
+
+  // getIt.registerLazySingleton<HomeRepo>(
+  //   () => HomeRepoImpl(apiConsumer: getIt<ApiConsumer>()),
   // );
-  //todo register other services and repositories as needed...
 }
