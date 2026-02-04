@@ -1,6 +1,6 @@
 enum UserRole {
   admin('Admin'),
-  teacher('Teacher'),
+  instructor('instructor'),
   student('Student')
   ;
 
@@ -11,7 +11,7 @@ enum UserRole {
   static UserRole fromString(String role) {
     return UserRole.values.firstWhere(
       (e) => e.name.toLowerCase() == role.toLowerCase(),
-      orElse: () => UserRole.admin, // Default value when no match is found
+      orElse: () => UserRole.student, // Default value when no match is found
     );
   }
 }

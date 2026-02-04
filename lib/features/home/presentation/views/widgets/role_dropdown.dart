@@ -17,7 +17,7 @@ class RoleDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final otherRole = currentRole == UserRole.student
-        ? UserRole.teacher
+        ? UserRole.instructor
         : UserRole.student;
 
     return PopupMenuButton<UserRole>(
