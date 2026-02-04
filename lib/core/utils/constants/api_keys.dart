@@ -1,5 +1,7 @@
-class ApiKeys {
+abstract class ApiKeys {
   ApiKeys._();
+
+  //! --- JSON KEYS (The names that Dio sends and receives) ---
 
   //? Common Keys
   static const String status = 'status';
@@ -12,6 +14,7 @@ class ApiKeys {
   static const String name = 'name';
   static const String academicEmail = 'academicEmail';
   static const String academicId = 'academicId';
+  static const String password = 'password';
   static const String profilePic = 'profilePic';
   static const String isActive = 'isActive';
   static const String role = 'role';
@@ -25,20 +28,16 @@ class ApiKeys {
   static const String hasNextPage = 'hasNextPage';
   static const String hasPrevPage = 'hasPrevPage';
 
-  //? Fetch Users Params keys
+  //? Fetch Users Params Keys
   static const String page = 'page';
   static const String sortBy = 'sortBy';
   static const String sortOrder = 'sortOrder';
   static const String roleId = 'roleId';
   static const String search = 'search';
 
-  //? Fetch Users Params Values
-  static const String createdAt = 'createdAt';
-  static const String desc = 'desc';
-
   //? Auth Keys
-  static String authorization = 'Authorization';
-  static String password = 'password';
+  static const String authorization = 'Authorization';
+
   // static String errorMessage = 'businessErrorDescription';
   // static String email = 'email';
   // static String password = 'password';
@@ -56,4 +55,24 @@ class ApiKeys {
   // static String description = 'description';
   // static String file = 'file';
   // ... more keys
+}
+
+//! --- API VALUES (Fixed values that the server expects inside the fields) ---
+
+abstract class ApiValues {
+  ApiValues._();
+
+  //?  Sorting Values
+  static const String createdAt = 'createdAt';
+  static const String desc = 'desc';
+  static const String asc = 'asc';
+
+  //? User Status Values
+  static const String active = 'active';
+  static const String inactive = 'inactive';
+
+  //? Roles
+  static const String admin = 'admin';
+  static const String instructor = 'instructor';
+  static const String student = 'student';
 }
