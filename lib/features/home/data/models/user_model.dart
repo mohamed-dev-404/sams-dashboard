@@ -23,19 +23,18 @@ class UserModel {
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
-      id: json[ApiKeys.id] as String,
-      name: json[ApiKeys.name] as String,
-      email: json[ApiKeys.academicEmail] as String,
-      academicId: json[ApiKeys.academicId] as String,
+      id: json[ApiKeys.id] as String? ?? '', //* Avoid crash if id is missing
+      name: json[ApiKeys.name] as String? ?? 'No Name',
+      email: json[ApiKeys.academicEmail] as String? ?? '',
+      academicId: json[ApiKeys.academicId] as String? ?? '',
       profilePic: json[ApiKeys.profilePic] as String?,
 
-      //* Status mapping: convert boolean value to enum
-      status: json[ApiKeys.isActive] == true
+      //*  Boolean check handles both true/false and null (default to false)
+      status: (json[ApiKeys.isActive] as bool? ?? false)
           ? UserStatus.active
           : UserStatus.inactive,
 
-      //* Role mapping: use the static method we created
-      role: UserRole.fromString(json[ApiKeys.role] as String),
+      role: UserRole.fromString(json[ApiKeys.role] as String? ?? ''),
     );
   }
 }
