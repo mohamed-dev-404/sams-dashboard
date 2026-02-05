@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sams_dashboard/core/utils/router/build_route.dart';
 import 'package:sams_dashboard/core/utils/router/routes_name.dart';
+import 'package:sams_dashboard/core/utils/services/service_locator.dart';
 import 'package:sams_dashboard/core/widgets/general_error_page.dart';
+import 'package:sams_dashboard/features/home/data/repos/home_repo.dart';
+import 'package:sams_dashboard/features/home/presentation/view_models/home_cubit/home_cubit.dart';
 import 'package:sams_dashboard/features/home/presentation/views/add_user_view.dart';
 import 'package:sams_dashboard/features/home/presentation/views/home_view.dart';
 
@@ -20,7 +24,11 @@ class AppRouter {
       buildRoute(
         name: RoutesName.home,
         path: RoutesName.home,
-        builder: (context, state) => const HomeView(),
+        builder: (context, state) => BlocProvider(
+          lazy: false,
+          create: (context) => HomeCubit(getIt<HomeRepo>())..getUsers(),
+          child: const HomeView(),
+        ),
       ),
       buildRoute(
         name: RoutesName.addUser,
