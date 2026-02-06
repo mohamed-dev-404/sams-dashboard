@@ -5,6 +5,7 @@ class SizeConfig {
 
   // Base design size for web dashboard
   static const Size webBaseSize = Size(1440, 1024);
+  static const int kSmallWebLayoutbreakPoint = 1000;
 
   // Screen dimensions helpers
   static double screenHeight(BuildContext context) =>

@@ -1,1 +1,19 @@
-//todo shared animated loading indicator widget used in the app
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:sams_dashboard/core/utils/colors/app_colors.dart';
+
+class AppAnimatedLoadingIndicator extends StatelessWidget {
+  const AppAnimatedLoadingIndicator({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: LoadingAnimationWidget.flickr(
+        leftDotColor: AppColors.primary,
+        rightDotColor: AppColors.secondary,
+        size: 50.sp.clamp(45, 65),
+      ),
+    );
+  }
+}

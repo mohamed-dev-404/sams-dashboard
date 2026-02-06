@@ -175,7 +175,7 @@ class AppStyles {
   // =========================================================
 
   static TextStyle get webLabelMd => TextStyle(
-    fontSize: 20.sp.clamp(16, 26),
+    fontSize: 20.sp.clamp(16, 24),
     fontWeight: FontWeight.w500,
     fontFamily: _fontFamily,
   );
