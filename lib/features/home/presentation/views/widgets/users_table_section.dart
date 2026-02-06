@@ -1,62 +1,48 @@
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sams_dashboard/core/utils/colors/app_colors.dart';
 import 'package:sams_dashboard/core/utils/styles/app_styles.dart';
 import 'package:sams_dashboard/features/home/data/enum/user_status.dart';
 import 'package:sams_dashboard/features/home/data/models/user_model.dart';
+import 'package:sams_dashboard/features/home/presentation/view_models/home_cubit/home_cubit.dart';
 import 'package:sams_dashboard/features/home/presentation/views/widgets/role_dropdown.dart';
 import 'package:sams_dashboard/features/home/presentation/views/widgets/user_status_badge.dart';
 
 /// ================= USERS TABLE SECTION =================
 /// Main widget responsible for rendering users data table
-class UsersTableSection extends StatefulWidget {
-  final List<UserModel> users;
 
+class UsersTableSection extends StatelessWidget {
   const UsersTableSection({super.key, required this.users});
-  @override
-  State<UsersTableSection> createState() => _UsersTableSectionState();
-}
-
-class _UsersTableSectionState extends State<UsersTableSection> {
-  int _currentSortIndex = 0; // current sorted column index
-  bool _isAscending = true; // sort direction
+  final List<UserModel> users;
 
   @override
   Widget build(BuildContext context) {
-    final displayUsers = widget.users;
     return DataTable2(
-      //* Sorting config
       sortArrowIconColor: AppColors.whiteLight,
       sortArrowIcon: Icons.swap_vert_rounded,
-      sortColumnIndex: _currentSortIndex,
-      sortAscending: _isAscending,
-
-      //* Layout config
+      sortColumnIndex: 0,
+      sortAscending: true,
       columnSpacing: 12,
       horizontalMargin: 12,
       minWidth: 800,
       headingRowHeight: 50.h,
       dataRowHeight: 70.h,
-
-      //* Header style
       headingRowColor: WidgetStateProperty.all(AppColors.primary),
       headingTextStyle: AppStyles.mobileBodyXsmallRg.copyWith(
         color: Colors.white,
       ),
-
-      //* Table structure
-      columns: _buildColumns(),
-      rows: displayUsers
+      columns: _buildColumns(context), // Pass context if needed for sorting
+      rows: users
           .asMap()
           .entries
-          .map((e) => _buildUserRow(e.value, e.key))
+          .map((e) => _buildUserRow(context, e.value, e.key))
           .toList(),
     );
   }
 
-  ///* Build table columns
-  List<DataColumn> _buildColumns() {
+  List<DataColumn> _buildColumns(BuildContext context) {
     return [
       _createSortableColumn('ID', ColumnSize.S, (u) => u.id, 0),
       _createSortableColumn('Name', ColumnSize.L, (u) => u.name, 1),
@@ -66,52 +52,38 @@ class _UsersTableSectionState extends State<UsersTableSection> {
     ];
   }
 
-  ///* Reusable sortable column builder
-  DataColumn2 _createSortableColumn(
-    String label,
-    ColumnSize size,
-    Comparable Function(UserModel) getField,
-    int index,
-  ) {
-    return DataColumn2(
-      label: _SortableHeader(
-        title: label,
-        index: index,
-        currentIndex: _currentSortIndex,
-      ),
-      size: size,
-      onSort: (idx, asc) => _sortUsers(getField, idx, asc),
-    );
-  }
-
-  ///* Build single user row
-  DataRow _buildUserRow(UserModel user, int index) {
+  DataRow _buildUserRow(BuildContext context, UserModel user, int index) {
     final cellStyle = AppStyles.mobileBodyXsmallRg.copyWith(
       color: AppColors.primaryDark,
     );
 
     return DataRow(
-      //* Zebra rows
       color: WidgetStateProperty.all(
         index.isEven ? AppColors.white : AppColors.whiteHover,
       ),
       cells: [
-        DataCell(Text(user.id, style: cellStyle)),
+        DataCell(Text(user.academicId, style: cellStyle)),
         DataCell(Text(user.name, style: cellStyle)),
         DataCell(Text(user.email, style: cellStyle)),
         DataCell(
           _StatusActionCell(
             user: user,
-            onToggle: () => setState(() {}),
+            onToggle: () {
+              // Now we can safely access context
+              BlocProvider.of<HomeCubit>(
+                context,
+              ).toggleActivation(userId: user.id);
+            },
           ),
         ),
         DataCell(
           RoleDropdown(
             currentRole: user.role,
-            onChanged: (newRole) {
-              return setState(() {
-                //              user.role = newRole ;
-              });
+            onChanged: (newRoleId) {
+              // context.read<HomeCubit>().changeRole(
+              //   userId: user.id,
+              //   roleId: newRoleId.label,
+              // );
             },
           ),
         ),
@@ -119,22 +91,26 @@ class _UsersTableSectionState extends State<UsersTableSection> {
     );
   }
 
-  ///* Generic sorting logic for any column
+  // Generic Column Builder
+  DataColumn2 _createSortableColumn(
+    String label,
+    ColumnSize size,
+    Comparable Function(UserModel) getField,
+    int index,
+  ) {
+    return DataColumn2(
+      label: _SortableHeader(title: label, index: index, currentIndex: 0),
+      size: size,
+      onSort: (idx, asc) => _sortUsers(getField, idx, asc),
+    );
+  }
+
   void _sortUsers(
     Comparable Function(UserModel u) getField,
     int index,
     bool asc,
   ) {
-    setState(() {
-      _currentSortIndex = index;
-      _isAscending = asc;
-
-      widget.users.sort(
-        (a, b) => asc
-            ? getField(a).compareTo(getField(b))
-            : getField(b).compareTo(getField(a)),
-      );
-    });
+    // Logic for sorting can be added here or delegated to Cubit
   }
 }
 
