@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sams_dashboard/core/utils/assets/app_images.dart';
+import 'package:sams_dashboard/core/utils/assets/app_icons.dart';
 import 'package:sams_dashboard/core/utils/colors/app_colors.dart';
 import 'package:sams_dashboard/core/utils/styles/app_styles.dart';
 import 'package:sams_dashboard/features/home/data/enum/user_role.dart';
@@ -108,7 +108,7 @@ class _RoleFilter extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomPopupMenuButton<UserRole>(
       label: 'Role',
-      icon: AppImages.roleIcon,
+      icon: AppIcons.roleIcon,
       items: UserRole.values,
       selectedValue: selectedRole,
       itemLabelBuilder: (role) => role.label,
@@ -127,7 +127,7 @@ class _StatusFilter extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomPopupMenuButton<UserStatus>(
       label: 'Status',
-      icon: AppImages.statusIcon,
+      icon: AppIcons.statusIcon,
       items: UserStatus.values,
       selectedValue: selectedStatus,
       itemLabelBuilder: (status) => status.label,
