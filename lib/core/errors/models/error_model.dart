@@ -4,6 +4,7 @@ class ErrorModel {
   final String status;
   final String message;
   final dynamic data;
+
   ErrorModel({
     required this.status,
     required this.message,
@@ -11,15 +12,26 @@ class ErrorModel {
   });
 
   factory ErrorModel.fromJson(Map<String, dynamic> json) {
-    String? tempMessage = json[ApiKeys.message] as String?;
+    String tempMessage = '';
 
+    //! 1. Handle validation errors (list of messages)
     if (json[ApiKeys.validationErrors] != null &&
         json[ApiKeys.validationErrors] is List) {
-      tempMessage = (json[ApiKeys.validationErrors] as List).join('\n');
+      final List<dynamic> errors = json[ApiKeys.validationErrors];
+      tempMessage = errors.join('\n');
     }
+    //! 2. Handle single error message (String)
+    else if (json[ApiKeys.message] != null) {
+      tempMessage = json[ApiKeys.message].toString();
+    }
+    //! 3. Fallback if no error message exists
+    else {
+      tempMessage = 'Unexpected error occurred';
+    }
+
     return ErrorModel(
-      status: json[ApiKeys.status] as String? ?? 'fail',
-      message: tempMessage ?? 'Something went wrong',
+      status: json[ApiKeys.status]?.toString() ?? 'fail',
+      message: tempMessage,
       data: json[ApiKeys.data],
     );
   }
