@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:sams_dashboard/core/helper/app_snack_bar.dart';
 import 'package:sams_dashboard/core/utils/colors/app_colors.dart';
 import 'package:sams_dashboard/core/utils/styles/app_styles.dart';
+import 'package:sams_dashboard/core/widgets/app_animated_loading_indicator.dart';
 import 'package:sams_dashboard/features/home/presentation/view_models/home_cubit/home_cubit.dart';
 import 'package:sams_dashboard/features/home/presentation/views/widgets/users_filters_section.dart';
 import 'package:sams_dashboard/features/home/presentation/views/widgets/users_table_section.dart';
@@ -21,16 +23,15 @@ class UsersManagementSection extends StatelessWidget {
           top: Radius.circular(16.r),
         ),
       ),
-      child: BlocBuilder<HomeCubit, HomeState>(
+      child: BlocConsumer<HomeCubit, HomeState>(
         builder: (context, state) {
-          if (state is HomeLoading) {
-            return const Dialog(
-              backgroundColor: Colors.transparent,
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
+          if (state.status == HomeStatus.loading) {
+            return const AppAnimatedLoadingIndicator();
+          } else if (state.status == HomeStatus.failure) {
+            return Center(
+              child: Text(state.errMessage ?? 'Failed to load users'),
             );
-          } else if (state is HomeSuccess) {
+          } else if (state.status == HomeStatus.success) {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -38,9 +39,9 @@ class UsersManagementSection extends StatelessWidget {
 
                 //*) Table Section (listens to page & rows changes)
                 Expanded(
-                  child: state.userResponse.users.isEmpty
+                  child: state.users.isEmpty
                       ? _buildEmptyState()
-                      : UsersTableSection(users: state.userResponse.users),
+                      : UsersTableSection(users: state.users),
                 ),
 
                 const Divider(height: 1, color: AppColors.whiteHover),
@@ -63,12 +64,26 @@ class UsersManagementSection extends StatelessWidget {
                 // ),
               ],
             );
-          } else if (state is HomeFailure) {
-            return Center(
-              child: Text(state.errMessage),
+          }
+
+          return const SizedBox.shrink();
+        },
+        listener: (context, state) {
+          if (state.actionStatus == HomeStatus.failure) {
+            AppSnackBar.error(
+              context,
+              state.actionMessage ?? 'Error occurred',
+              duration: const Duration(
+                seconds: 4,
+              ),
             );
-          } else {
-            return const SizedBox.shrink();
+          }
+
+          if (state.actionStatus == HomeStatus.success) {
+            AppSnackBar.success(
+              context,
+              'User status updated successfully',
+            );
           }
         },
       ),

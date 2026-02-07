@@ -1,35 +1,36 @@
 part of 'home_cubit.dart';
 
-@immutable
-sealed class HomeState {}
+enum HomeStatus { initial, loading, success, failure }
 
-class HomeInitial extends HomeState {}
+class HomeState {
+  final HomeStatus status;
+  final List<UserModel> users;
+  final String? errMessage;
 
-// General Page Loading (Initial fetch)
-class HomeLoading extends HomeState {}
+  final HomeStatus actionStatus;
+  final String? actionMessage;
 
-// Success state for fetching the list
-class HomeSuccess extends HomeState {
-  final UserResponseModel userResponse;
-  HomeSuccess({required this.userResponse});
+  HomeState({
+    this.status = HomeStatus.initial,
+    this.users = const [],
+    this.errMessage,
+    this.actionStatus = HomeStatus.initial,
+    this.actionMessage,
+  });
+
+  HomeState copyWith({
+    HomeStatus? status,
+    List<UserModel>? users,
+    String? errMessage,
+    HomeStatus? actionStatus,
+    String? actionMessage,
+  }) {
+    return HomeState(
+      status: status ?? this.status,
+      users: users ?? this.users,
+      errMessage: errMessage ?? this.errMessage,
+      actionStatus: actionStatus ?? this.actionStatus,
+      actionMessage: actionMessage ?? this.actionMessage,
+    );
+  }
 }
-
-// Global failure (Page load failed)
-class HomeFailure extends HomeState {
-  final String errMessage;
-  HomeFailure(this.errMessage);
-}
-
-// Action States (For Create, Toggle, Change Role)
-class HomeActionLoading extends HomeState {}
-
-class HomeActionSuccess extends HomeState {
-  final String message;
-  HomeActionSuccess(this.message);
-}
-
-class HomeActionFailure extends HomeState {
-  final String errMessage;
-  HomeActionFailure(this.errMessage);
-}
-
