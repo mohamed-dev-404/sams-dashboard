@@ -6,5 +6,5 @@ abstract class AppException implements Exception {
   AppException({required this.errorModel});
 
   @override
-  String toString() => errorModel.message;
+  String toString() => errorModel.errorMessage;
 }

@@ -27,7 +27,7 @@ class HomeRepoImpl implements HomeRepo {
       );
       return Right(UserResponseModel.fromJson(response));
     } on ApiException catch (e) {
-      return Left(e.errorModel.message);
+      return Left(e.errorModel.errorMessage);
     } catch (e) {
       errorMessage = e.toString();
       return Left(errorMessage);
@@ -45,7 +45,7 @@ class HomeRepoImpl implements HomeRepo {
       );
       return Right(UserModel.fromJson(response[ApiKeys.data]));
     } on ApiException catch (e) {
-      return Left(e.errorModel.message);
+      return Left(e.errorModel.errorMessage);
     } catch (e) {
       errorMessage = e.toString();
       return Left(errorMessage);
@@ -69,7 +69,7 @@ class HomeRepoImpl implements HomeRepo {
 
       return Right(UserModel.fromJson(response[ApiKeys.data]));
     } on ApiException catch (e) {
-      return Left(e.errorModel.message);
+      return Left(e.errorModel.errorMessage);
     } catch (e) {
       errorMessage = e.toString();
       return Left(errorMessage);
@@ -88,7 +88,7 @@ class HomeRepoImpl implements HomeRepo {
       );
       return Right(response[ApiKeys.message] as String? ?? 'Success');
     } on ApiException catch (e) {
-      return Left(e.errorModel.message);
+      return Left(e.errorModel.errorMessage);
     } catch (e) {
       errorMessage = e.toString();
       return Left(errorMessage);
@@ -109,7 +109,7 @@ class HomeRepoImpl implements HomeRepo {
 
       return Right(roles);
     } on ApiException catch (e) {
-      return Left(e.errorModel.message);
+      return Left(e.errorModel.errorMessage);
     } catch (e) {
       errorMessage = e.toString();
       return Left(errorMessage);

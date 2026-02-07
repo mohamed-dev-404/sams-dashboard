@@ -43,8 +43,8 @@ void handleDioExceptions(DioException e) {
 
   throw ApiException(
     errorModel: ErrorModel(
-      status: e.response?.statusCode.toString() ?? 'fail',
-      message: errorMessage,
+      errorMessage: errorMessage,
+      statusCode: e.response?.statusCode,
     ),
   );
 }
@@ -73,7 +73,7 @@ String _handleBadResponse(DioException e) {
   //* Try to extract error message from response
   if (responseData != null && responseData is Map<String, dynamic>) {
     try {
-      return ErrorModel.fromJson(responseData).message;
+      return ErrorModel.fromJson(responseData).errorMessage;
     } catch (_) {
       // If parsing fails, skip and use status code based messages
     }
