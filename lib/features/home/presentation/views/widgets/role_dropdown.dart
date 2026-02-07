@@ -20,47 +20,65 @@ class RoleDropdown extends StatelessWidget {
         ? UserRole.instructor
         : UserRole.student;
 
-    return PopupMenuButton<UserRole>(
-      offset: Offset(80.w, 45.h),
-      color: AppColors.whiteLight,
-      elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12.r),
-        side: const BorderSide(color: AppColors.primaryLightHover),
-      ),
-      onSelected: onChanged,
-      itemBuilder: (context) => [
-        PopupMenuItem<UserRole>(
-          value: otherRole,
-          height: 40.h,
-          child: Center(
-            child: Text(
-              otherRole.label,
-              style: AppStyles.mobileBodyXsmallRg.copyWith(
-                color: AppColors.primaryDark,
-                fontWeight: FontWeight.bold,
+    return currentRole != UserRole.admin
+        ? PopupMenuButton<UserRole>(
+            offset: Offset(80.w, 45.h),
+            color: AppColors.whiteLight,
+            elevation: 4,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12.r),
+              side: const BorderSide(color: AppColors.primaryLightHover),
+            ),
+            onSelected: onChanged,
+            itemBuilder: (context) => [
+              PopupMenuItem<UserRole>(
+                value: otherRole,
+                height: 40.h,
+                child: Center(
+                  child: Text(
+                    otherRole.label,
+                    style: AppStyles.mobileBodyXsmallRg.copyWith(
+                      color: AppColors.primaryDark,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
               ),
+            ],
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  currentRole.label,
+                  style: AppStyles.mobileBodyXsmallRg.copyWith(
+                    color: AppColors.primaryDark,
+                  ),
+                ),
+                SizedBox(width: 4.w),
+                Icon(
+                  Icons.keyboard_arrow_down,
+                  size: 16.sp,
+                  color: AppColors.primaryDark,
+                ),
+              ],
             ),
-          ),
-        ),
-      ],
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            currentRole.label,
-            style: AppStyles.mobileBodyXsmallRg.copyWith(
-              color: AppColors.primaryDark,
-            ),
-          ),
-          SizedBox(width: 4.w),
-          Icon(
-            Icons.keyboard_arrow_down,
-            size: 16.sp,
-            color: AppColors.primaryDark,
-          ),
-        ],
-      ),
-    );
+          )
+        : Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                currentRole.label,
+                style: AppStyles.mobileBodyXsmallRg.copyWith(
+                  color: AppColors.primaryDark,
+                ),
+              ),
+              SizedBox(width: 4.w),
+              Icon(
+                Icons.people_sharp,
+                size: 16.sp,
+                color: AppColors.primaryDark,
+              ),
+            ],
+          );
   }
 }
