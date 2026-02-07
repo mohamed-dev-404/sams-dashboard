@@ -21,6 +21,22 @@ class UserModel {
     required this.role,
   });
 
+  UserModel copyWith({
+    String? profilePic,
+    UserStatus? status,
+    UserRole? role,
+  }) {
+    return UserModel(
+      role: role ?? this.role,
+      status: status ?? this.status,
+      profilePic: profilePic ?? this.profilePic,
+      id: id,
+      name: name,
+      email: email,
+      academicId: academicId,
+    );
+  }
+
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
       id: json[ApiKeys.id] as String? ?? '', //* Avoid crash if id is missing
