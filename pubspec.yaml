@@ -37,6 +37,8 @@ dependencies:
   dropdown_button2: ^2.3.9
   flutter:
     sdk: flutter
+  flutter_web_plugins:
+    sdk: flutter
   flutter_bloc: ^9.1.1
   flutter_screenutil: ^5.9.3
   flutter_secure_storage: ^10.0.0
