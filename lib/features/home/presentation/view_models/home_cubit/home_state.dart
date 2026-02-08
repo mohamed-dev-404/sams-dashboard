@@ -1,36 +1,33 @@
 part of 'home_cubit.dart';
 
-enum HomeStatus { initial, loading, success, failure }
+//* 1. Base State
+sealed class HomeState {}
 
-class HomeState {
-  final HomeStatus status;
-  final List<UserModel> users;
-  final String? errMessage;
+final class HomeInitial extends HomeState {}
 
-  final HomeStatus actionStatus;
-  final String? actionMessage;
+final class HomeLoading extends HomeState {}
 
-  HomeState({
-    this.status = HomeStatus.initial,
-    this.users = const [],
-    this.errMessage,
-    this.actionStatus = HomeStatus.initial,
-    this.actionMessage,
-  });
+final class HomeFailure extends HomeState {
+  final String errorMessage;
+  HomeFailure(this.errorMessage);
+}
 
-  HomeState copyWith({
-    HomeStatus? status,
-    List<UserModel>? users,
-    String? errMessage,
-    HomeStatus? actionStatus,
-    String? actionMessage,
-  }) {
-    return HomeState(
-      status: status ?? this.status,
-      users: users ?? this.users,
-      errMessage: errMessage ?? this.errMessage,
-      actionStatus: actionStatus ?? this.actionStatus,
-      actionMessage: actionMessage ?? this.actionMessage,
-    );
-  }
+final class HomeSuccess extends HomeState {
+  final UserResponseModel userResponse;
+  HomeSuccess({required this.userResponse});
+}
+
+//* 2. Side Effects States
+sealed class HomeActionState extends HomeState {}
+
+final class HomeActionLoading extends HomeActionState {}
+
+final class HomeActionSuccess extends HomeActionState {
+  final String message;
+  HomeActionSuccess(this.message);
+}
+
+final class HomeActionFailure extends HomeActionState {
+  final String errorMessage;
+  HomeActionFailure(this.errorMessage);
 }
