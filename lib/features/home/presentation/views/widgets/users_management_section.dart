@@ -24,14 +24,21 @@ class UsersManagementSection extends StatelessWidget {
         ),
       ),
       child: BlocConsumer<HomeCubit, HomeState>(
+        buildWhen: (previous, current) =>
+            current is HomeSuccess ||
+            current is HomeLoading ||
+            current is HomeFailure,
+
+        listenWhen: (previous, current) => current is HomeActionState,
+
         builder: (context, state) {
-          if (state.status == HomeStatus.loading) {
+          if (state is HomeLoading) {
             return const AppAnimatedLoadingIndicator();
-          } else if (state.status == HomeStatus.failure) {
+          } else if (state is HomeFailure) {
             return Center(
-              child: Text(state.errMessage ?? 'Failed to load users'),
+              child: Text(state.errorMessage),
             );
-          } else if (state.status == HomeStatus.success) {
+          } else if (state is HomeSuccess) {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -39,9 +46,9 @@ class UsersManagementSection extends StatelessWidget {
 
                 //*) Table Section (listens to page & rows changes)
                 Expanded(
-                  child: state.users.isEmpty
+                  child: state.userResponse.users.isEmpty
                       ? _buildEmptyState()
-                      : UsersTableSection(users: state.users),
+                      : UsersTableSection(users: state.userResponse.users),
                 ),
 
                 const Divider(height: 1, color: AppColors.whiteHover),
@@ -69,20 +76,19 @@ class UsersManagementSection extends StatelessWidget {
           return const SizedBox.shrink();
         },
         listener: (context, state) {
-          if (state.actionStatus == HomeStatus.failure) {
+          if (state is HomeActionFailure) {
             AppSnackBar.error(
               context,
-              state.actionMessage ?? 'Error occurred',
+              state.errorMessage,
               duration: const Duration(
                 seconds: 4,
               ),
             );
           }
-
-          if (state.actionStatus == HomeStatus.success) {
+          if (state is HomeActionSuccess) {
             AppSnackBar.success(
               context,
-              'User status updated successfully',
+              state.message,
             );
           }
         },

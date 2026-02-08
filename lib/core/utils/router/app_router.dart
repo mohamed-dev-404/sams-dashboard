@@ -26,7 +26,7 @@ class AppRouter {
         path: RoutesName.home,
         builder: (context, state) => BlocProvider(
           lazy: false,
-          create: (context) => HomeCubit(getIt<HomeRepo>())..getUsers(),
+          create: (context) => HomeCubit(getIt<HomeRepo>())..initHome(),
           child: const HomeView(),
         ),
       ),
