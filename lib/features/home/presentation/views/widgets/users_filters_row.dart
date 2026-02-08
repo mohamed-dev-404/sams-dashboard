@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sams_dashboard/core/utils/assets/app_icons.dart';
 import 'package:sams_dashboard/core/utils/colors/app_colors.dart';
+import 'package:sams_dashboard/core/utils/configs/size_config.dart';
 import 'package:sams_dashboard/core/utils/styles/app_styles.dart';
 import 'package:sams_dashboard/features/home/data/enum/user_role.dart';
 import 'package:sams_dashboard/features/home/data/enum/user_status.dart';
@@ -38,25 +39,63 @@ class UsersFiltersRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final w = MediaQuery.of(context).size.width;
     return Container(
       padding: const EdgeInsets.all(16),
       color: AppColors.primaryLight,
-      child: Row(
-        children: [
-          _UsersSearchField(onChanged: onSearchChanged),
-          const SizedBox(width: 12),
-          _AddUserButton(onPressed: onAddUserPressed),
-          const SizedBox(width: 8),
-          _RoleFilter(selectedRole: selectedRole, onSelected: onRoleSelected),
-          const SizedBox(width: 8),
-          _StatusFilter(
-            selectedStatus: selectedStatus,
-            onSelected: onStatusSelected,
-          ),
-          const SizedBox(width: 8),
-          ClearFiltersButton(onPressed: onClearFilters),
-        ],
-      ),
+      child: w > SizeConfig.kSmallWebLayoutbreakPoint
+          ? Row(
+              children: [
+                _UsersSearchField(onChanged: onSearchChanged),
+                const SizedBox(width: 12),
+                _AddUserButton(onPressed: onAddUserPressed),
+                const SizedBox(width: 8),
+                _RoleFilter(
+                  selectedRole: selectedRole,
+                  onSelected: onRoleSelected,
+                ),
+                const SizedBox(width: 8),
+                _StatusFilter(
+                  selectedStatus: selectedStatus,
+                  onSelected: onStatusSelected,
+                ),
+                const SizedBox(width: 8),
+                ClearFiltersButton(onPressed: onClearFilters),
+              ],
+            )
+          : Column(
+              children: [
+                SizedBox(
+                  height: 50,
+                  child: Row(
+                    children: [
+                      _UsersSearchField(onChanged: onSearchChanged),
+                      const SizedBox(width: 8),
+                      ClearFiltersButton(onPressed: onClearFilters),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: _AddUserButton(onPressed: onAddUserPressed),
+                    ),
+                    const SizedBox(width: 8),
+                    _RoleFilter(
+                      selectedRole: selectedRole,
+                      onSelected: onRoleSelected,
+                    ),
+                    const SizedBox(width: 8),
+                    _StatusFilter(
+                      selectedStatus: selectedStatus,
+                      onSelected: onStatusSelected,
+                    ),
+                  ],
+                ),
+              ],
+            ),
     );
   }
 }
