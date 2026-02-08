@@ -80,10 +80,12 @@ class UsersTableSection extends StatelessWidget {
           RoleDropdown(
             currentRole: user.role,
             onChanged: (newRoleId) {
-              // context.read<HomeCubit>().changeRole(
-              //   userId: user.id,
-              //   roleId: newRoleId.label,
-              // );
+              BlocProvider.of<HomeCubit>(
+                context,
+              ).changeUserRole(
+                userId: user.id,
+                newRole: newRoleId,
+              );
             },
           ),
         ),

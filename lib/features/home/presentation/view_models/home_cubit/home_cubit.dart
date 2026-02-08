@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
+import 'package:sams_dashboard/features/home/data/enum/user_role.dart';
 import 'package:sams_dashboard/features/home/data/enum/user_status.dart';
 import 'package:sams_dashboard/features/home/data/models/fetch_users_params.dart';
 import 'package:sams_dashboard/features/home/data/models/role_model.dart';
@@ -88,4 +89,61 @@ class HomeCubit extends Cubit<HomeState> {
       },
     );
   }
+
+  //* 3. Change Role
+  Future<void> changeUserRole({
+    required String userId,
+    required UserRole newRole,
+  }) async {
+    if (_currentUsers == null) return;
+    final previousResponse = _currentUsers;
+
+    final roleModel = _roles.firstWhere(
+      (r) => r.role == newRole,
+      orElse: () => RoleModel(id: '', role: newRole),
+    );
+
+    if (roleModel.id.isEmpty) {
+      emit(HomeActionFailure('Role ID not found for ${newRole.name}'));
+      return;
+    }
+
+    final updatedList = _currentUsers!.users.map((user) {
+      if (user.id == userId) {
+        return user.copyWith(
+          role: user.role == UserRole.instructor
+              ? UserRole.student
+              : UserRole.instructor,
+        );
+      }
+      return user;
+    }).toList();
+
+    _currentUsers = _currentUsers!.copyWith(users: updatedList);
+
+    emit(HomeSuccess(userResponse: _currentUsers!));
+
+    final result = await homeRepo.changeUserRole(
+      userId: userId,
+      roleId: roleModel.id,
+    );
+
+    result.fold(
+      (error) {
+        _currentUsers = previousResponse;
+        emit(HomeSuccess(userResponse: _currentUsers!));
+        emit(HomeActionFailure(error));
+      },
+      (updatedUser) {
+        emit(
+          HomeActionSuccess(
+            'User role updated to ${newRole.name} successfully',
+          ),
+        );
+      },
+    );
+  }
+
+
+  
 }
