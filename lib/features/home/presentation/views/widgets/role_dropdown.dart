@@ -57,7 +57,7 @@ class RoleDropdown extends StatelessWidget {
                 SizedBox(width: 4.w),
                 Icon(
                   Icons.keyboard_arrow_down,
-                  size: 16.sp,
+                  size: 16.sp.clamp(16, 18),
                   color: AppColors.primaryDark,
                 ),
               ],
@@ -75,7 +75,7 @@ class RoleDropdown extends StatelessWidget {
               SizedBox(width: 4.w),
               Icon(
                 Icons.people_sharp,
-                size: 16.sp,
+                size: 16.sp.clamp(16, 18),
                 color: AppColors.primaryDark,
               ),
             ],
