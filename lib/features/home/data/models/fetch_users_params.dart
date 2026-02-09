@@ -42,12 +42,13 @@ class FetchUsersParams {
     String? status,
     String? sortBy,
     String? sortOrder,
+    bool clearSearch = false,
   }) {
     return FetchUsersParams(
       page: page ?? this.page,
       size: size ?? this.size,
       roleId: roleId ?? this.roleId,
-      search: search ?? this.search,
+      search: clearSearch ? null : (search ?? this.search),
       status: status ?? this.status,
       sortBy: sortBy ?? this.sortBy,
       sortOrder: sortOrder ?? this.sortOrder,

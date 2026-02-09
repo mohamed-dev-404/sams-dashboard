@@ -1,5 +1,7 @@
+import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
+import 'package:flutter/widgets.dart';
 import 'package:sams_dashboard/core/utils/constants/api_keys.dart';
 import 'package:sams_dashboard/features/home/data/enum/user_role.dart';
 import 'package:sams_dashboard/features/home/data/enum/user_status.dart';
@@ -21,6 +23,16 @@ class HomeCubit extends Cubit<HomeState> {
 
   int currentSortColumnIndex = 0;
   bool isAscending = true;
+
+  UserRole? selectedRoleEnum;
+  UserStatus? selectedStatusEnum;
+  final TextEditingController searchController = TextEditingController();
+
+  @override
+  Future<void> close() {
+    searchController.dispose();
+    return super.close();
+  }
 
   //?  Fetch all init data
   Future<void> initHome() async {
@@ -85,6 +97,74 @@ class HomeCubit extends Cubit<HomeState> {
     );
 
     await getUsers();
+  }
+
+  //* 1.4 update Page Size
+  void updatePageSize(int newSize) {
+    _currentParams = _currentParams.copyWith(
+      size: newSize,
+      page: 1,
+    );
+
+    getUsers();
+  }
+
+  //* 1.5 Apply Filters (Logic Correction)
+  void applyFilters({
+    UserRole? role,
+    UserStatus? status,
+    String? search,
+  }) {
+    if (role != null) selectedRoleEnum = role;
+    if (status != null) selectedStatusEnum = status;
+
+    String? mappedRoleId;
+    if (selectedRoleEnum != null) {
+      try {
+        mappedRoleId = _roles.firstWhere((r) => r.role == selectedRoleEnum).id;
+      } catch (e) {
+        log('Error mapping role: $e');
+        mappedRoleId = null;
+      }
+    }
+
+    _currentParams = _currentParams.copyWith(
+      roleId: mappedRoleId,
+      status: selectedStatusEnum?.name,
+      page: 1,
+    );
+
+    getUsers();
+  }
+
+  //* 1.6 Apply on Search Submitted
+  void onSearchSubmitted(String query) {
+    final cleanQuery = query.trim();
+
+    if (cleanQuery.isEmpty) {
+      _currentParams = _currentParams.copyWith(
+        clearSearch: true,
+        page: 1,
+      );
+      searchController.clear();
+    } else {
+      _currentParams = _currentParams.copyWith(
+        search: cleanQuery,
+        clearSearch: false,
+        page: 1,
+      );
+    }
+
+    getUsers();
+  }
+
+  //* 1.7 Clear Filters
+  void clearFilters() {
+    selectedRoleEnum = null;
+    selectedStatusEnum = null;
+    searchController.clear();
+    _currentParams = FetchUsersParams();
+    getUsers();
   }
 
   //* 2. Toggle Activation

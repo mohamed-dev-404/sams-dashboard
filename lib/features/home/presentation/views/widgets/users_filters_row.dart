@@ -12,7 +12,7 @@ class UsersFiltersRow extends StatelessWidget {
     super.key,
 
     // Search
-    this.onSearchChanged,
+    this.onSubmitted,
 
     // Add user
     this.onAddUserPressed,
@@ -27,15 +27,17 @@ class UsersFiltersRow extends StatelessWidget {
 
     // Clear
     this.onClearFilters,
+    required this.controller,
   });
 
-  final ValueChanged<String>? onSearchChanged;
+  final ValueChanged<String>? onSubmitted;
   final VoidCallback? onAddUserPressed;
   final UserRole? selectedRole;
   final ValueChanged<UserRole>? onRoleSelected;
   final UserStatus? selectedStatus;
   final ValueChanged<UserStatus>? onStatusSelected;
   final VoidCallback? onClearFilters;
+  final TextEditingController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +48,10 @@ class UsersFiltersRow extends StatelessWidget {
       child: w > SizeConfig.kSmallWebLayoutbreakPoint
           ? Row(
               children: [
-                _UsersSearchField(onChanged: onSearchChanged),
+                _UsersSearchField(
+                  onSubmitted: onSubmitted,
+                  controller: controller,
+                ),
                 const SizedBox(width: 12),
                 _AddUserButton(onPressed: onAddUserPressed),
                 const SizedBox(width: 8),
@@ -69,7 +74,10 @@ class UsersFiltersRow extends StatelessWidget {
                   height: 50,
                   child: Row(
                     children: [
-                      _UsersSearchField(onChanged: onSearchChanged),
+                      _UsersSearchField(
+                        onSubmitted: onSubmitted,
+                        controller: controller,
+                      ),
                       const SizedBox(width: 8),
                       ClearFiltersButton(onPressed: onClearFilters),
                     ],
@@ -101,15 +109,18 @@ class UsersFiltersRow extends StatelessWidget {
 }
 
 class _UsersSearchField extends StatelessWidget {
-  const _UsersSearchField({this.onChanged});
+  const _UsersSearchField({this.onSubmitted, required this.controller});
 
-  final ValueChanged<String>? onChanged;
+  final ValueChanged<String>? onSubmitted;
+  final TextEditingController controller;
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: TextField(
-        onChanged: onChanged,
+        controller: controller,
+        onSubmitted: onSubmitted,
+        textInputAction: TextInputAction.search,
         decoration: const InputDecoration(
           hintText: 'Search',
           prefixIcon: Icon(Icons.search),

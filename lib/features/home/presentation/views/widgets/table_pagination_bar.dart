@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sams_dashboard/core/utils/colors/app_colors.dart';
 import 'package:sams_dashboard/core/utils/styles/app_styles.dart';
-import 'package:sams_dashboard/features/home/data/models/fetch_users_params.dart';
 import 'package:sams_dashboard/features/home/data/models/user_pagination_model.dart';
 import 'package:sams_dashboard/features/home/presentation/view_models/home_cubit/home_cubit.dart';
 
@@ -165,11 +164,7 @@ class TablePaginationBar extends StatelessWidget {
       onSelected: (numOfUsers) {
         BlocProvider.of<HomeCubit>(
           context,
-        ).getUsers(
-          params: FetchUsersParams(
-            size: numOfUsers,
-          ),
-        );
+        ).updatePageSize(numOfUsers);
       },
       offset: const Offset(0, 40),
       elevation: 4,
