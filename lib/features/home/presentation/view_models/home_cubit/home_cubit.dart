@@ -16,6 +16,7 @@ class HomeCubit extends Cubit<HomeState> {
 
   UserResponseModel? _currentUsers;
   List<RoleModel> _roles = [];
+  FetchUsersParams _currentParams = FetchUsersParams();
 
   //? . Fetch all init data
   Future<void> initHome() async {
@@ -42,8 +43,11 @@ class HomeCubit extends Cubit<HomeState> {
 
   //* 1. Fetch Users
   Future<void> getUsers({FetchUsersParams? params}) async {
+    if (params != null) {
+      _currentParams = params;
+    }
     emit(HomeLoading());
-    final result = await homeRepo.fetchUsers(params: params);
+    final result = await homeRepo.fetchUsers(params: _currentParams);
 
     result.fold(
       (failure) => emit(HomeFailure(failure)),
@@ -52,6 +56,11 @@ class HomeCubit extends Cubit<HomeState> {
         emit(HomeSuccess(userResponse: userResponse));
       },
     );
+  }
+
+  Future<void> updatePage(int newPage) async {
+    _currentParams = _currentParams.copyWith(page: newPage);
+    await getUsers();
   }
 
   //* 2. Toggle Activation
@@ -143,7 +152,4 @@ class HomeCubit extends Cubit<HomeState> {
       },
     );
   }
-
-
-  
 }

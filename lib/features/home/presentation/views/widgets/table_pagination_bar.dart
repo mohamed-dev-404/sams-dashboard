@@ -1,76 +1,73 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sams_dashboard/core/utils/colors/app_colors.dart';
 import 'package:sams_dashboard/core/utils/styles/app_styles.dart';
+import 'package:sams_dashboard/features/home/data/models/fetch_users_params.dart';
+import 'package:sams_dashboard/features/home/data/models/user_pagination_model.dart';
+import 'package:sams_dashboard/features/home/presentation/view_models/home_cubit/home_cubit.dart';
 
 //*) Pagination bar widget for table navigation
 class TablePaginationBar extends StatelessWidget {
   const TablePaginationBar({
     super.key,
-    required this.totalItems,
-    required this.rowsPerPage,
-    required this.currentPage,
-    required this.onRowsPerPageChanged,
-    required this.onPageChanged,
+    required this.userPaginationModel,
   });
 
-  final int totalItems; // Total number of items in the table
-
-  final int rowsPerPage; // Number of rows shown per page
-
-  final int currentPage; // Current active page (1-based index)
-
-  // Callback when rows-per-page value changes
-  final Function(int) onRowsPerPageChanged;
-
-  final Function(int) onPageChanged; //Callback when page number changes
+  final UserPaginationModel userPaginationModel;
 
   @override
   Widget build(BuildContext context) {
-    //! Calculate total pages safely (minimum = 1)
-    final int totalPages = (totalItems / rowsPerPage)
-        .ceil()
-        .clamp(1, double.infinity)
-        .toInt();
-
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         //*) Left side: page navigation controls
-        _buildNavigationControls(totalPages),
+        _buildNavigationControls(userPaginationModel, context),
 
         //*) Right side: rows-per-page selector
-        _buildRowsPerPageControls(),
+        _buildRowsPerPageControls(context),
       ],
     );
   }
 
-  //*) ------------------------------------------------------------------------
   //*) Navigation Controls (Left Section)
-  //*) ------------------------------------------------------------------------
 
-  //? Builds previous/next buttons and current page indicator
-  Widget _buildNavigationControls(int totalPages) {
+  Widget _buildNavigationControls(
+    UserPaginationModel userPaginationModel,
+    BuildContext context,
+  ) {
     return Row(
       children: [
         _buildNavButton(
           icon: Icons.chevron_left,
-          //? Disable button when already on first page
-          onTap: currentPage > 1 ? () => onPageChanged(currentPage - 1) : null,
+          onTap: userPaginationModel.hasPrevPage
+              ? () {
+                  BlocProvider.of<HomeCubit>(
+                    context,
+                  ).updatePage(
+                    userPaginationModel.currentPage - 1,
+                  );
+                }
+              : null,
         ),
         SizedBox(width: 8.w),
-        _buildPageNumberBox(currentPage),
+        _buildPageNumberBox(userPaginationModel.currentPage),
         SizedBox(width: 8.w),
         _buildNavButton(
           icon: Icons.chevron_right,
-          //? Disable button when already on last page
-          onTap: currentPage < totalPages
-              ? () => onPageChanged(currentPage + 1)
+          onTap: userPaginationModel.hasNextPage
+              ? () {
+                  BlocProvider.of<HomeCubit>(
+                    context,
+                  ).updatePage(
+                    userPaginationModel.currentPage + 1,
+                  );
+                }
               : null,
         ),
         SizedBox(width: 12.w),
         Text(
-          'of $totalPages pages',
+          'of ${userPaginationModel.totalPages} pages',
           style: AppStyles.mobileBodySmallRg.copyWith(
             color: AppColors.primaryDark,
           ),
@@ -79,12 +76,12 @@ class TablePaginationBar extends StatelessWidget {
     );
   }
 
-  //*) ------------------------------------------------------------------------
   //*) Rows Per Page Controls (Right Section)
-  //*) ------------------------------------------------------------------------
 
   //? Builds rows-per-page label and selector
-  Widget _buildRowsPerPageControls() {
+  Widget _buildRowsPerPageControls(
+    BuildContext context,
+  ) {
     return Row(
       children: [
         Text(
@@ -94,7 +91,7 @@ class TablePaginationBar extends StatelessWidget {
           ),
         ),
         SizedBox(width: 8.w),
-        _buildRowsPerPageSelector(),
+        _buildRowsPerPageSelector(context),
         SizedBox(width: 8.w),
         Text(
           'items per page',
@@ -106,16 +103,13 @@ class TablePaginationBar extends StatelessWidget {
     );
   }
 
-  //*) ------------------------------------------------------------------------
   //*) Helper Widgets
-  //*) ------------------------------------------------------------------------
 
   //? Builds a navigation button with disabled state handling
   Widget _buildNavButton({
     required IconData icon,
     VoidCallback? onTap,
   }) {
-    //! Button is disabled when onTap is null
     final bool isDisabled = onTap == null;
 
     return MouseRegion(
@@ -126,7 +120,6 @@ class TablePaginationBar extends StatelessWidget {
           width: 32.w,
           height: 36.h,
           decoration: BoxDecoration(
-            //? Use faded color when disabled
             color: isDisabled ? AppColors.whiteHover : AppColors.primary,
             borderRadius: BorderRadius.circular(8.r),
           ),
@@ -163,10 +156,21 @@ class TablePaginationBar extends StatelessWidget {
   }
 
   //? Popup menu for selecting rows per page
-  Widget _buildRowsPerPageSelector() {
+
+  Widget _buildRowsPerPageSelector(
+    BuildContext context,
+  ) {
     return PopupMenuButton<int>(
-      initialValue: rowsPerPage,
-      onSelected: onRowsPerPageChanged,
+      initialValue: userPaginationModel.size,
+      onSelected: (numOfUsers) {
+        BlocProvider.of<HomeCubit>(
+          context,
+        ).getUsers(
+          params: FetchUsersParams(
+            size: numOfUsers,
+          ),
+        );
+      },
       offset: const Offset(0, 40),
       elevation: 4,
       color: AppColors.whiteLight,
@@ -176,7 +180,7 @@ class TablePaginationBar extends StatelessWidget {
           color: AppColors.primaryLightHover,
         ),
       ),
-      itemBuilder: (context) => [5, 10, 15, 20, 50]
+      itemBuilder: (context) => [5, 10, 15, 20]
           .map(
             (val) => PopupMenuItem<int>(
               value: val,
@@ -204,11 +208,20 @@ class TablePaginationBar extends StatelessWidget {
           borderRadius: BorderRadius.circular(8.r),
           color: AppColors.whiteLight,
         ),
-        child: Text(
-          rowsPerPage.toString(),
-          style: AppStyles.mobileTitleXsmallMd.copyWith(
-            color: AppColors.primaryDark,
-          ),
+        child: Row(
+          children: [
+            Text(
+              userPaginationModel.size.toString(),
+              style: AppStyles.mobileTitleXsmallMd.copyWith(
+                color: AppColors.primaryDark,
+              ),
+            ),
+            Icon(
+              Icons.keyboard_arrow_down,
+              size: 16.sp.clamp(16, 18),
+              color: AppColors.whiteDarkActive,
+            ),
+          ],
         ),
       ),
     );

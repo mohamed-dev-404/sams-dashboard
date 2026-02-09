@@ -6,6 +6,7 @@ import 'package:sams_dashboard/core/utils/colors/app_colors.dart';
 import 'package:sams_dashboard/core/utils/styles/app_styles.dart';
 import 'package:sams_dashboard/core/widgets/app_animated_loading_indicator.dart';
 import 'package:sams_dashboard/features/home/presentation/view_models/home_cubit/home_cubit.dart';
+import 'package:sams_dashboard/features/home/presentation/views/widgets/table_pagination_bar.dart';
 import 'package:sams_dashboard/features/home/presentation/views/widgets/users_filters_section.dart';
 import 'package:sams_dashboard/features/home/presentation/views/widgets/users_table_section.dart';
 
@@ -55,20 +56,9 @@ class UsersManagementSection extends StatelessWidget {
                 SizedBox(height: 24.h),
 
                 //*) Pagination Bar Section
-                // TablePaginationBar(
-                //   totalItems: state.userResponse.pagination.totalElements,
-                //   currentPage: state.userResponse.pagination.currentPage,
-                //   rowsPerPage: state.userResponse.pagination.size,
-                //   onRowsPerPageChanged: (newRows) {
-                //     context.read<HomeCubit>().updatePagination(limit: newRows, page: 1);
-                //     //! Reset page when rows-per-page changes
-                //     state.userResponse.pagination.size = newRows;
-                //     state.userResponse.pagination.currentPage = 1;
-                //   },
-                //   onPageChanged: (newPage) {
-                //     state.userResponse.pagination.currentPage = newPage;
-                //   },
-                // ),
+                TablePaginationBar(
+                  userPaginationModel: state.userResponse.pagination,
+                ),
               ],
             );
           }
