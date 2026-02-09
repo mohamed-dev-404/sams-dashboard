@@ -64,6 +64,9 @@ abstract class ApiValues {
 
   //?  Sorting Values
   static const String createdAt = 'createdAt';
+  static const String academicId = 'academicId';
+  static const String academicEmail = 'academicEmail';
+  static const String name = 'name';
   static const String desc = 'desc';
   static const String asc = 'asc';
 

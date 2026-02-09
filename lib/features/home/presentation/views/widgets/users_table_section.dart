@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:sams_dashboard/core/utils/colors/app_colors.dart';
+import 'package:sams_dashboard/core/utils/constants/api_keys.dart';
 import 'package:sams_dashboard/core/utils/styles/app_styles.dart';
 import 'package:sams_dashboard/features/home/data/enum/user_status.dart';
 import 'package:sams_dashboard/features/home/data/models/user_model.dart';
@@ -19,11 +20,12 @@ class UsersTableSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    HomeCubit cubit = context.read<HomeCubit>();
     return DataTable2(
       sortArrowIconColor: AppColors.whiteLight,
       sortArrowIcon: Icons.swap_vert_rounded,
-      sortColumnIndex: 0,
-      sortAscending: true,
+      sortColumnIndex: cubit.currentSortColumnIndex,
+      sortAscending: cubit.isAscending,
       columnSpacing: 12,
       horizontalMargin: 12,
       minWidth: 800,
@@ -43,10 +45,33 @@ class UsersTableSection extends StatelessWidget {
   }
 
   List<DataColumn> _buildColumns(BuildContext context) {
+    final cubit = context.read<HomeCubit>();
+
     return [
-      _createSortableColumn('ID', ColumnSize.S, (u) => u.id, 0),
-      _createSortableColumn('Name', ColumnSize.L, (u) => u.name, 1),
-      _createSortableColumn('Email/Academic', ColumnSize.L, (u) => u.email, 2),
+      _createSortableColumn(
+        context,
+        'ID',
+        ColumnSize.S,
+        ApiValues.academicId,
+        0,
+        cubit.currentSortColumnIndex,
+      ),
+      _createSortableColumn(
+        context,
+        'Name',
+        ColumnSize.L,
+        ApiValues.name,
+        1,
+        cubit.currentSortColumnIndex,
+      ),
+      _createSortableColumn(
+        context,
+        'Email/Academic',
+        ColumnSize.L,
+        ApiValues.academicEmail,
+        2,
+        cubit.currentSortColumnIndex,
+      ),
       const DataColumn2(label: Text('Status'), size: ColumnSize.M),
       const DataColumn2(label: Text('Role'), size: ColumnSize.M),
     ];
@@ -93,26 +118,29 @@ class UsersTableSection extends StatelessWidget {
     );
   }
 
-  // Generic Column Builder
   DataColumn2 _createSortableColumn(
+    BuildContext context,
     String label,
     ColumnSize size,
-    Comparable Function(UserModel) getField,
+    String fieldName,
     int index,
+    int currentActiveIndex,
   ) {
     return DataColumn2(
-      label: _SortableHeader(title: label, index: index, currentIndex: 0),
+      label: _SortableHeader(
+        title: label,
+        index: index,
+        currentIndex: currentActiveIndex,
+      ),
       size: size,
-      onSort: (idx, asc) => _sortUsers(getField, idx, asc),
+      onSort: (columnIndex, ascending) {
+        context.read<HomeCubit>().sortUsers(
+          sortBy: fieldName,
+          ascending: ascending,
+          columnIndex: columnIndex,
+        );
+      },
     );
-  }
-
-  void _sortUsers(
-    Comparable Function(UserModel u) getField,
-    int index,
-    bool asc,
-  ) {
-    // Logic for sorting can be added here or delegated to Cubit
   }
 }
 

@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
+import 'package:sams_dashboard/core/utils/constants/api_keys.dart';
 import 'package:sams_dashboard/features/home/data/enum/user_role.dart';
 import 'package:sams_dashboard/features/home/data/enum/user_status.dart';
 import 'package:sams_dashboard/features/home/data/models/fetch_users_params.dart';
@@ -18,7 +19,10 @@ class HomeCubit extends Cubit<HomeState> {
   List<RoleModel> _roles = [];
   FetchUsersParams _currentParams = FetchUsersParams();
 
-  //? . Fetch all init data
+  int currentSortColumnIndex = 0;
+  bool isAscending = true;
+
+  //?  Fetch all init data
   Future<void> initHome() async {
     emit(HomeLoading());
 
@@ -58,8 +62,28 @@ class HomeCubit extends Cubit<HomeState> {
     );
   }
 
+  //* 1.2 update Page
   Future<void> updatePage(int newPage) async {
     _currentParams = _currentParams.copyWith(page: newPage);
+    await getUsers();
+  }
+
+  //* 1.3 Sort Users
+  Future<void> sortUsers({
+    required String sortBy,
+    required bool ascending,
+    required int columnIndex,
+  }) async {
+    currentSortColumnIndex = columnIndex;
+    isAscending = ascending;
+
+    final order = ascending ? ApiValues.asc : ApiValues.desc;
+    _currentParams = _currentParams.copyWith(
+      sortBy: sortBy,
+      sortOrder: order,
+      page: 1,
+    );
+
     await getUsers();
   }
 
