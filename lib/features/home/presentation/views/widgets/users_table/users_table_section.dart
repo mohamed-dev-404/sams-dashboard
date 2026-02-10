@@ -8,8 +8,8 @@ import 'package:sams_dashboard/core/utils/styles/app_styles.dart';
 import 'package:sams_dashboard/features/home/data/enum/user_status.dart';
 import 'package:sams_dashboard/features/home/data/models/user_model.dart';
 import 'package:sams_dashboard/features/home/presentation/view_models/home_cubit/home_cubit.dart';
-import 'package:sams_dashboard/features/home/presentation/views/widgets/role_dropdown.dart';
-import 'package:sams_dashboard/features/home/presentation/views/widgets/user_status_badge.dart';
+import 'package:sams_dashboard/features/home/presentation/views/widgets/users_table/role_dropdown.dart';
+import 'package:sams_dashboard/features/home/presentation/views/widgets/users_table/user_status_badge.dart';
 
 /// ================= USERS TABLE SECTION =================
 /// Main widget responsible for rendering users data table

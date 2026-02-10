@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sams_dashboard/core/utils/router/routes_name.dart';
 import 'package:sams_dashboard/features/home/presentation/view_models/home_cubit/home_cubit.dart';
-import 'package:sams_dashboard/features/home/presentation/views/widgets/users_filters_row.dart';
+import 'package:sams_dashboard/features/home/presentation/views/widgets/filters/users_filters_row.dart';
 
 class UsersFiltersSection extends StatelessWidget {
   const UsersFiltersSection({super.key});
