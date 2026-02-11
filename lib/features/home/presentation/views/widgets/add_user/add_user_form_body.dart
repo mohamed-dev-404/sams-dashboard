@@ -1,8 +1,11 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:sams_dashboard/core/enums/text_field_type.dart';
 import 'package:sams_dashboard/core/utils/colors/app_colors.dart';
 import 'package:sams_dashboard/core/utils/styles/app_styles.dart';
+import 'package:sams_dashboard/core/widgets/app_text_field.dart';
+import 'package:sams_dashboard/core/widgets/titled_input_field.dart';
 import 'package:sams_dashboard/features/home/data/enum/user_role.dart';
 
 class AddUserFormBody extends StatefulWidget {
@@ -16,6 +19,43 @@ class _AddUserFormBodyState extends State<AddUserFormBody> {
   //* State variable to hold the selected dropdown value
   UserRole? _selectedRole;
 
+  late final TextEditingController _nameController;
+  late final TextEditingController _iDController;
+
+  late final TextEditingController _emailController;
+  late final TextEditingController _roleController;
+
+  late final TextEditingController _passwordController;
+  late final TextEditingController _confirmPasswordController;
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController();
+    _iDController = TextEditingController();
+
+    _emailController = TextEditingController();
+    _roleController = TextEditingController();
+
+    _passwordController = TextEditingController();
+    _confirmPasswordController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+
+    _nameController.dispose();
+    _iDController.dispose();
+
+    _roleController.dispose();
+    _confirmPasswordController.dispose();
+
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -25,6 +65,7 @@ class _AddUserFormBodyState extends State<AddUserFormBody> {
         borderRadius: BorderRadius.circular(15.r),
       ),
       child: Form(
+        key: _formKey,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -38,18 +79,32 @@ class _AddUserFormBodyState extends State<AddUserFormBody> {
             SizedBox(height: 16.h),
 
             //! Form Input Fields
-            _buildInputLabel('Full Name'),
-            _buildTextField(hint: 'e.g. John Doe'),
-
+            TitledInputField(
+              label: 'Full Name',
+              child: AppTextField(
+                hintText: 'e.g. John Doe',
+                textFieldType: TextFieldType.alphabetical,
+                controller: _nameController,
+              ),
+            ),
             SizedBox(height: 16.h),
-
-            _buildInputLabel('User ID'),
-            _buildTextField(hint: 'e.g. 202202986'),
-
+            TitledInputField(
+              label: 'User ID',
+              child: AppTextField(
+                hintText: 'e.g. 202202986',
+                textFieldType: TextFieldType.alphabetical,
+                controller: _iDController,
+              ),
+            ),
             SizedBox(height: 16.h),
-
-            _buildInputLabel('Academic Email'),
-            _buildTextField(hint: 'john@o6u.edu.eg'),
+            TitledInputField(
+              label: 'Academic Email',
+              child: AppTextField(
+                hintText: 'john@o6u.edu.eg',
+                textFieldType: TextFieldType.alphabetical,
+                controller: _emailController,
+              ),
+            ),
 
             SizedBox(height: 16.h),
 
@@ -75,17 +130,23 @@ class _AddUserFormBodyState extends State<AddUserFormBody> {
             ),
 
             SizedBox(height: 16.h),
-
-            _buildInputLabel('Password'),
-            _buildTextField(
-              hint: '••••••••',
+            TitledInputField(
+              label: 'Password',
+              child: AppTextField(
+                hintText: '••••••••',
+                textFieldType: TextFieldType.alphabetical,
+                controller: _passwordController,
+              ),
             ),
 
             SizedBox(height: 16.h),
-
-            _buildInputLabel('Confirm Password'),
-            _buildTextField(
-              hint: '••••••••',
+            TitledInputField(
+              label: 'Confirm Password',
+              child: AppTextField(
+                hintText: '••••••••',
+                textFieldType: TextFieldType.alphabetical,
+                controller: _confirmPasswordController,
+              ),
             ),
           ],
         ),
@@ -102,16 +163,6 @@ class _AddUserFormBodyState extends State<AddUserFormBody> {
         style: AppStyles.webLabelMd.copyWith(
           color: AppColors.primaryDark,
         ),
-      ),
-    );
-  }
-
-  //? Helper widget to build consistent text input fields
-  Widget _buildTextField({required String hint}) {
-    return TextFormField(
-      decoration: InputDecoration(
-        isDense: true,
-        hintText: hint,
       ),
     );
   }
@@ -144,7 +195,6 @@ class _CustomDropdownField<T> extends StatelessWidget {
         ),
       ),
       decoration: InputDecoration(
-        isDense: true,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15.r),
           borderSide: const BorderSide(color: AppColors.secondary),
