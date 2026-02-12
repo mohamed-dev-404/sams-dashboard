@@ -1,21 +1,27 @@
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:sams_dashboard/core/enums/password_field_type.dart';
 import 'package:sams_dashboard/core/enums/text_field_type.dart';
 import 'package:sams_dashboard/core/utils/colors/app_colors.dart';
 import 'package:sams_dashboard/core/utils/styles/app_styles.dart';
 import 'package:sams_dashboard/core/widgets/app_text_field.dart';
+import 'package:sams_dashboard/core/widgets/password_text_field.dart';
 import 'package:sams_dashboard/core/widgets/titled_input_field.dart';
 import 'package:sams_dashboard/features/home/data/enum/user_role.dart';
+import 'package:sams_dashboard/features/home/data/models/create_user_params.dart'
+    show CreateUserParams;
+import 'package:sams_dashboard/features/home/presentation/view_models/add_user/add_user_cubit.dart';
+import 'package:sams_dashboard/features/home/presentation/views/widgets/add_user/custom_dropdown_field.dart';
 
 class AddUserFormBody extends StatefulWidget {
   const AddUserFormBody({super.key});
 
   @override
-  State<AddUserFormBody> createState() => _AddUserFormBodyState();
+  State<AddUserFormBody> createState() => AddUserFormBodyState();
 }
 
-class _AddUserFormBodyState extends State<AddUserFormBody> {
+class AddUserFormBodyState extends State<AddUserFormBody> {
   //* State variable to hold the selected dropdown value
   UserRole? _selectedRole;
 
@@ -26,7 +32,6 @@ class _AddUserFormBodyState extends State<AddUserFormBody> {
   late final TextEditingController _roleController;
 
   late final TextEditingController _passwordController;
-  late final TextEditingController _confirmPasswordController;
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -39,7 +44,6 @@ class _AddUserFormBodyState extends State<AddUserFormBody> {
     _roleController = TextEditingController();
 
     _passwordController = TextEditingController();
-    _confirmPasswordController = TextEditingController();
   }
 
   @override
@@ -51,7 +55,6 @@ class _AddUserFormBodyState extends State<AddUserFormBody> {
     _iDController.dispose();
 
     _roleController.dispose();
-    _confirmPasswordController.dispose();
 
     super.dispose();
   }
@@ -92,7 +95,7 @@ class _AddUserFormBodyState extends State<AddUserFormBody> {
               label: 'User ID',
               child: AppTextField(
                 hintText: 'e.g. 202202986',
-                textFieldType: TextFieldType.alphabetical,
+                textFieldType: TextFieldType.normal,
                 controller: _iDController,
               ),
             ),
@@ -101,7 +104,7 @@ class _AddUserFormBodyState extends State<AddUserFormBody> {
               label: 'Academic Email',
               child: AppTextField(
                 hintText: 'john@o6u.edu.eg',
-                textFieldType: TextFieldType.alphabetical,
+                textFieldType: TextFieldType.academicEmail,
                 controller: _emailController,
               ),
             ),
@@ -110,7 +113,7 @@ class _AddUserFormBodyState extends State<AddUserFormBody> {
 
             _buildInputLabel('Role'),
             //* Custom generic dropdown implementation
-            _CustomDropdownField<UserRole>(
+            CustomDropdownField<UserRole>(
               value: _selectedRole,
               hintText: 'Select User Role',
               items: UserRole.values.map((item) {
@@ -132,20 +135,20 @@ class _AddUserFormBodyState extends State<AddUserFormBody> {
             SizedBox(height: 16.h),
             TitledInputField(
               label: 'Password',
-              child: AppTextField(
+              child: AppPasswordField(
                 hintText: '••••••••',
-                textFieldType: TextFieldType.alphabetical,
                 controller: _passwordController,
+                passwordFieldType: PasswordFieldType.originalPassword,
               ),
             ),
 
             SizedBox(height: 16.h),
             TitledInputField(
               label: 'Confirm Password',
-              child: AppTextField(
+              child: AppPasswordField(
                 hintText: '••••••••',
-                textFieldType: TextFieldType.alphabetical,
-                controller: _confirmPasswordController,
+                originalController: _passwordController,
+                passwordFieldType: PasswordFieldType.confirmPassword,
               ),
             ),
           ],
@@ -166,65 +169,18 @@ class _AddUserFormBodyState extends State<AddUserFormBody> {
       ),
     );
   }
-}
 
-//* Private reusable dropdown widget for this file
-class _CustomDropdownField<T> extends StatelessWidget {
-  final T? value;
-  final String hintText;
-  final List<DropdownMenuItem<T>> items;
-  final ValueChanged<T?> onChanged;
-  final String? Function(T?)? validator;
+  void submitForm() {
+    if (_formKey.currentState!.validate()) {
+      final params = CreateUserParams(
+        name: _nameController.text,
+        email: _emailController.text,
+        academicId: _iDController.text,
+        roleId: _selectedRole?.name ?? '',
+        password: _passwordController.text,
+      );
 
-  const _CustomDropdownField({
-    required this.value,
-    required this.hintText,
-    required this.items,
-    required this.onChanged,
-    this.validator,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return DropdownButtonFormField2<T>(
-      value: value,
-      hint: Text(
-        hintText,
-        style: AppStyles.mobileLabelMediumRg.copyWith(
-          color: AppColors.whiteDarkHover,
-        ),
-      ),
-      decoration: InputDecoration(
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15.r),
-          borderSide: const BorderSide(color: AppColors.secondary),
-        ),
-      ),
-      items: items,
-      onChanged: onChanged,
-      iconStyleData: const IconStyleData(
-        icon: Icon(
-          Icons.keyboard_arrow_down_rounded,
-          color: AppColors.whiteDarkHover,
-        ),
-      ),
-      dropdownStyleData: DropdownStyleData(
-        padding: EdgeInsets.zero,
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: AppColors.secondaryLightActive,
-          ),
-          borderRadius: BorderRadius.circular(15.r),
-          color: AppColors.secondaryLight,
-        ),
-        //? Positioning the menu overlay relative to the field
-        offset: const Offset(0, -6),
-      ),
-      menuItemStyleData: MenuItemStyleData(
-        padding: EdgeInsets.symmetric(horizontal: 16.w),
-        height: 48.h,
-      ),
-      validator: validator,
-    );
+      context.read<AddUserCubit>().createUser(params);
+    }
   }
 }

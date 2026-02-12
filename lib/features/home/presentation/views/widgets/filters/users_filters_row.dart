@@ -5,7 +5,7 @@ import 'package:sams_dashboard/core/utils/configs/size_config.dart';
 import 'package:sams_dashboard/core/utils/styles/app_styles.dart';
 import 'package:sams_dashboard/features/home/data/enum/user_role.dart';
 import 'package:sams_dashboard/features/home/data/enum/user_status.dart';
-import 'package:sams_dashboard/features/home/presentation/views/widgets/custom_popup_menu_button.dart';
+import 'package:sams_dashboard/features/home/presentation/views/widgets/filters/custom_popup_menu_button.dart';
 
 class UsersFiltersRow extends StatelessWidget {
   const UsersFiltersRow({

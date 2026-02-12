@@ -6,6 +6,7 @@ import 'package:sams_dashboard/core/utils/router/routes_name.dart';
 import 'package:sams_dashboard/core/utils/services/service_locator.dart';
 import 'package:sams_dashboard/core/widgets/general_error_page.dart';
 import 'package:sams_dashboard/features/home/data/repos/home_repo.dart';
+import 'package:sams_dashboard/features/home/presentation/view_models/add_user/add_user_cubit.dart';
 import 'package:sams_dashboard/features/home/presentation/view_models/home_cubit/home_cubit.dart';
 import 'package:sams_dashboard/features/home/presentation/views/add_user_view.dart';
 import 'package:sams_dashboard/features/home/presentation/views/home_view.dart';
@@ -33,7 +34,10 @@ class AppRouter {
       buildRoute(
         name: RoutesName.addUser,
         path: RoutesName.addUser,
-        builder: (context, state) => const AddUserView(),
+        builder: (context, state) => BlocProvider(
+          create: (context) => AddUserCubit(getIt<HomeRepo>()),
+          child: AddUserView(),
+        ),
       ),
 
       /// buildRoute(
