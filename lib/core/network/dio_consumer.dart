@@ -22,7 +22,7 @@ class DioConsumer extends ApiConsumer {
       ..receiveTimeout = const Duration(seconds: 20);
     dio.interceptors.add(HeaderInterceptor());
     dio.interceptors.add(NetworkInterceptor(Connectivity()));
-    dio.interceptors.add(AuthInterceptor(dio));
+    dio.interceptors.add(AuthInterceptor(dio, DioConsumer(dio)));
     dio.interceptors.add(RetryInterceptor(dio, maxRetries: 5));
     if (!kReleaseMode) {
       dio.interceptors.add(DioLogger());
