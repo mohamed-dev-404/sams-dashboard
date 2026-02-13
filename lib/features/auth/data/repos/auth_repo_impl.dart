@@ -21,7 +21,6 @@ class AuthRepoImpl implements AuthRepo {
     required String password,
   }) async {
     try {
-
       // hit login request
       Map<String, dynamic> response = await api.post(
         EndPoints.login,
@@ -39,7 +38,6 @@ class AuthRepoImpl implements AuthRepo {
       await _cacheUserData(loginModel);
 
       return Right(loginModel); // success case, return loginModel
-
     } on ApiException catch (e) {
       return Left(e.errorModel.errorMessage); // failure case
     } catch (e) {
@@ -47,35 +45,108 @@ class AuthRepoImpl implements AuthRepo {
     }
   }
 
+  //! forget password Flow
 
-  //! forget password request
+  //? (1) forget password request
   @override
-  Future<Either<String, String>> forgotPassword({required String email}) {
-
-    
-
-    throw UnimplementedError();
+  Future<Either<String, void>> forgotPassword({required String email}) async {
+    try {
+      //hit forget password request
+      await api.post(
+        EndPoints.forgetPassword,
+        data: {
+          ApiKeys.academicEmail: email,
+        },
+      );
+      return const Right(null); //success case
+    } on ApiException catch (e) {
+      return Left(e.errorModel.errorMessage); // failure case
+    } catch (e) {
+      return Left(e.toString()); // failure case
+    }
   }
 
-  @override
-  Future<Either<String, String>> resetPassword({
-    required String email,
-    required String otp,
-    required String newPassword,
-  }) {
-    throw UnimplementedError();
-  }
-
+  //? (2) verify password request
   @override
   Future<Either<String, String>> verifyOtp({
     required String email,
     required String otp,
-  }) {
-    throw UnimplementedError();
+    required String action,
+  }) async {
+    try {
+      //hit virfyOTP request
+      final Map<String, dynamic> response = await api.post(
+        EndPoints.virfyOTP,
+        data: {
+          ApiKeys.academicEmail: email,
+          ApiKeys.code: otp,
+          ApiKeys.action: action,
+        },
+      );
+
+      //parsing and extract reset token
+      final resetToken = response[ApiKeys.data][ApiKeys.resetToken];
+
+      return Right(resetToken); //success case, return reset token
+    } on ApiException catch (e) {
+      return Left(e.errorModel.errorMessage); // failure case
+    } catch (e) {
+      return Left(e.toString()); // failure case
+    }
   }
 
+  //? (3) reset password request
+  @override
+  Future<Either<String, String>> resetPassword({
+    required String resetToken,
+    required String newPassword,
+    required String confirmNewPassword,
+  }) async {
+    try {
+      //hit reset password request
+      final Map<String, dynamic> response = await api.patch(
+        EndPoints.resetPassword,
+        data: {
+          ApiKeys.resetToken: resetToken,
+          ApiKeys.newPassword: newPassword,
+          ApiKeys.confirmNewPassword: confirmNewPassword,
+        },
+      );
+      //parsing and extract seccess message
+      final successMessage = response[ApiKeys.message];
 
-//* helper methods
+      return Right(successMessage); //seccess case
+    } on ApiException catch (e) {
+      return Left(e.errorModel.errorMessage); // failure case
+    } catch (e) {
+      return Left(e.toString()); // failure case
+    }
+  }
+
+  //* resend otp
+  @override
+  Future<Either<String, void>> resendOTP({
+    required String email,
+    required String action,
+  }) async{
+     try {
+      //hit forget password request
+      await api.post(
+        EndPoints.resendOTP,
+        data: {
+          ApiKeys.academicEmail: email,
+          ApiKeys.action: action 
+        },
+      );
+      return const Right(null); //success case
+    } on ApiException catch (e) {
+      return Left(e.errorModel.errorMessage); // failure case
+    } catch (e) {
+      return Left(e.toString()); // failure case
+    }
+  }
+
+  //* helper methods
   Future<void> _cacheUserData(LoginModel loginModel) async {
     await SecureStorageService.instance.saveAccessToken(
       loginModel.accessToken ?? '',
