@@ -16,12 +16,10 @@ class EndPoints {
   static const String roles = 'admin/roles';
 
   //? --- Auth  --- ;
-  // static String logIn = 'auth/login';
-  // static String register = 'auth/register';
-  // static String forgetpassword = 'auth/forgotten-password';
-  // static String virfyOTP = 'auth/verify-token';
-  // static String resetPassword = 'auth/reset-password';
-  // static String addProduct = 'admin/products';
-
-  // ... more endpoints
+  static String login = 'api/v1/auth/login';
+  static String refresh = 'api/v1/auth/refresh';
+  static String forgetPassword = 'api/v1/auth/forgot-password';
+  static String virfyOTP = 'api/v1/auth/verify-otp';
+  static String resetPassword = 'api/v1/auth/reset-password';
+  static String resendOTP = 'api/v1/auth/resend-code';
 }

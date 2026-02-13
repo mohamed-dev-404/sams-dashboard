@@ -37,6 +37,11 @@ abstract class ApiKeys {
 
   //? Auth Keys
   static const String authorization = 'Authorization';
+  static const String user = 'user';
+  static const String expiresIn = 'expiresIn';
+  static const String refreshToken = 'refreshToken';
+  static const String accessToken = 'accessToken';
+
 
   // static String errorMessage = 'businessErrorDescription';
   // static String email = 'email';
@@ -76,3 +81,5 @@ abstract class ApiValues {
   static const String instructor = 'instructor';
   static const String student = 'student';
 }
+
+
