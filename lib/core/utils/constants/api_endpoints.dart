@@ -16,10 +16,10 @@ class EndPoints {
   static const String roles = 'admin/roles';
 
   //? --- Auth  --- ;
-  static String login = 'api/v1/auth/login';
-  static String refresh = 'api/v1/auth/refresh';
-  static String forgetPassword = 'api/v1/auth/forgot-password';
-  static String virfyOTP = 'api/v1/auth/verify-otp';
-  static String resetPassword = 'api/v1/auth/reset-password';
-  static String resendOTP = 'api/v1/auth/resend-code';
+  static String login = 'auth/login';
+  static String refresh = 'auth/refresh';
+  static String forgetPassword = 'auth/forgot-password';
+  static String virfyOTP = 'auth/verify-otp';
+  static String resetPassword = 'auth/reset-password';
+  static String resendOTP = 'auth/resend-code';
 }

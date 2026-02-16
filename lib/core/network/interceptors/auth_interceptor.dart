@@ -1,58 +1,74 @@
 import 'package:dio/dio.dart';
+import 'package:go_router/go_router.dart';
+import 'package:sams_dashboard/core/cache/get_storage.dart';
 import 'package:sams_dashboard/core/cache/secure_storage.dart';
-import 'package:sams_dashboard/core/network/api_consumer.dart';
 import 'package:sams_dashboard/core/utils/constants/api_endpoints.dart';
 import 'package:sams_dashboard/core/utils/constants/api_keys.dart';
+import 'package:sams_dashboard/core/utils/constants/app_constants.dart';
+import 'package:sams_dashboard/core/utils/router/app_router.dart';
+import 'package:sams_dashboard/core/utils/router/routes_name.dart';
 import 'package:sams_dashboard/features/auth/data/models/login_model/login_model.dart';
 
 class AuthInterceptor extends Interceptor {
   final Dio dio;
-  final ApiConsumer api;
+  // Use a variable to track the refresh progress
+  Future<String?>? _accessTokenFuture;
 
-  AuthInterceptor(this.dio, this.api);
+  AuthInterceptor(this.dio);
 
   @override
-  Future onError(
-    DioException err,
-    ErrorInterceptorHandler handler,
-  ) async {
+  Future onError(DioException err, ErrorInterceptorHandler handler) async {
     if (err.response?.statusCode == 401) {
-      final newAccessToken = await _refreshToken();
+      // If a refresh is already in progress, wait for it.
+      // Otherwise, start a new one.
+      _accessTokenFuture ??= _refreshToken();
+
+      final newAccessToken = await _accessTokenFuture;
+      _accessTokenFuture = null; // Clear it after completion
 
       if (newAccessToken != null) {
         err.requestOptions.headers[ApiKeys.authorization] =
             'Bearer $newAccessToken';
-
         final response = await dio.fetch(err.requestOptions);
         return handler.resolve(response);
       }
     }
-
     return handler.next(err);
   }
 
   Future<String?> _refreshToken() async {
-    // get old refresh token to use it in request
     final oldRefreshToken = await SecureStorageService.instance
         .getRefreshToken();
 
-    //hit refresh token request
-    final Map<String, dynamic> response = await api.post(
-      EndPoints.refresh,
-      data: {
-        ApiKeys.refreshToken: oldRefreshToken,
-      },
-    );
+    if (oldRefreshToken == null) {
+      await _performLogout();
+      return null;
+    }
 
-    //parsing and initialize loginModel
-    final dataJson = response[ApiKeys.data];
-    LoginModel loginModel = LoginModel.fromJson(dataJson);
+    try {
+      final refreshDio = Dio(BaseOptions(baseUrl: AppConstants.baseUrl));
+      final response = await refreshDio.post(
+        EndPoints.refresh,
+        data: {ApiKeys.refreshToken: oldRefreshToken},
+      );
 
-    //cache new tokens
-    await _cacheNewTokens(loginModel);
+      final dataJson = response.data[ApiKeys.data];
+      LoginModel loginModel = LoginModel.fromJson(dataJson);
 
-    //reyurn new access token to add it in header of current request
-    return loginModel.accessToken;
+      await _cacheNewTokens(loginModel);
+      return loginModel.accessToken;
+    } catch (e) {
+      await _performLogout();
+      return null;
+    }
+  }
+
+  Future<void> _performLogout() async {
+    await SecureStorageService.instance.clearAll();
+    await GetStorageHelper.erase();
+
+    // ignore: use_build_context_synchronously
+    AppRouter.navigatorKey.currentState?.context.go(RoutesName.login);
   }
 
   Future<void> _cacheNewTokens(LoginModel loginModel) async {
