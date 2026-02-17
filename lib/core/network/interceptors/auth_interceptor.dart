@@ -18,6 +18,26 @@ class AuthInterceptor extends Interceptor {
 
   @override
   Future onError(DioException err, ErrorInterceptorHandler handler) async {
+    // 1. Define paths that should NOT trigger a refresh/logout
+    final guestPaths = [
+      EndPoints.forgetPassword,
+      EndPoints.verifyOTP,
+      EndPoints.resetPassword,
+      EndPoints.resendOTP,
+      EndPoints.login,
+    ];
+
+    // 2. Check if the current error came from one of these paths
+    final bool isGuestRequest = guestPaths.any(
+      (path) => err.requestOptions.path.contains(path),
+    );
+
+    // 3. If it's a guest request, just let the error pass to your Cubit
+    if (isGuestRequest) {
+      return handler.next(err);
+    }
+
+    // 4. Otherwise, proceed with the normal 401 refresh logic
     if (err.response?.statusCode == 401) {
       // If a refresh is already in progress, wait for it.
       // Otherwise, start a new one.

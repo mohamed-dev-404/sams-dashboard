@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sams_dashboard/core/functions/mask_email.dart';
+import 'package:sams_dashboard/core/helper/app_snack_bar.dart';
 import 'package:sams_dashboard/core/models/app_button_style_model.dart';
 import 'package:sams_dashboard/core/utils/colors/app_colors.dart';
 import 'package:sams_dashboard/core/utils/router/routes_name.dart';
 import 'package:sams_dashboard/core/utils/styles/app_styles.dart';
+import 'package:sams_dashboard/core/widgets/app_animated_loading_indicator.dart';
 import 'package:sams_dashboard/core/widgets/app_button.dart';
+import 'package:sams_dashboard/features/auth/presentation/view_models/password_reset_cubit/password_reset_cubit.dart';
+import 'package:sams_dashboard/features/auth/presentation/view_models/password_reset_cubit/password_reset_state.dart';
 import 'package:sams_dashboard/features/auth/presentation/views/widgets/auth_sider_image.dart';
 import 'package:sams_dashboard/features/auth/presentation/views/widgets/custom_pinput_field.dart';
 import 'package:sams_dashboard/features/auth/presentation/views/widgets/otp_timer.dart';
@@ -17,8 +23,9 @@ class VerifyOtpView extends StatefulWidget {
 }
 
 class _VerifyOtpViewState extends State<VerifyOtpView> {
+  late PasswordResetCubit cubit;
+
   late final TextEditingController _otpController;
-  final String email = 'ad******@sams.com';
   final _formKey = GlobalKey<FormState>();
 
   int _timerKey = 0; // Increment this to restart the timer
@@ -41,52 +48,83 @@ class _VerifyOtpViewState extends State<VerifyOtpView> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    return Scaffold(
-      body: Row(
-        children: [
-          if (screenWidth > 850) const AuthSiderImage(),
 
-          const SizedBox(width: 16),
+    cubit = context.read<PasswordResetCubit>();
 
-          Expanded(
-            child: Center(
-              child: SingleChildScrollView(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 780),
+    final maskedEmail = maskEmail(cubit.state.email ?? '');
 
-                  child: Form(
-                    key: _formKey,
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 32.0),
-                      child: Column(
-                        children: [
-                          _buildHeaderSection(),
+    return BlocConsumer<PasswordResetCubit, PasswordResetState>(
+      listener: (context, state) {
+        if (state.status == PasswordResetStatus.failure) {
+          AppSnackBar.error(
+            context,
+            state.errorMessage ?? 'unexpected error, please try again.',
+          );
+        } else if (state.status == PasswordResetStatus.codeResent) {
+          setState(() {
+            _canResend = false;
+            _timerKey++; // This forces the OtpTimer to restart
+          });
+          AppSnackBar.success(
+            context,
+            'Code successfully resent! Please check your inbox and spam folder.',
+            duration: const Duration(seconds: 4),
+          );
+        } else if (state.status == PasswordResetStatus.verified) {
+          context.go(RoutesName.resetPassword);
+        }
+      },
+      builder: (context, state) {
+        return Scaffold(
+          body: Row(
+            children: [
+              if (screenWidth > 850) const AuthSiderImage(),
 
-                          const SizedBox(height: 32),
+              const SizedBox(width: 16),
 
-                          _buildOtpField(),
+              Expanded(
+                child: Center(
+                  child: SingleChildScrollView(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 780),
 
-                          const SizedBox(height: 32),
+                      child: Form(
+                        key: _formKey,
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 32.0),
+                          child: Column(
+                            children: [
+                              _buildHeaderSection(maskedEmail),
 
-                          _buildResendRow(),
+                              const SizedBox(height: 32),
 
-                          const SizedBox(height: 90),
+                              _buildOtpField(),
 
-                          _buildSubmitButton(),
-                        ],
+                              const SizedBox(height: 32),
+
+                              _buildResendRow(),
+
+                              const SizedBox(height: 90),
+
+                              (state.status == PasswordResetStatus.loading)
+                                  ? const AppAnimatedLoadingIndicator()
+                                  : _buildSubmitButton(),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
-  Widget _buildHeaderSection() {
+  Widget _buildHeaderSection(String email) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -177,11 +215,7 @@ class _VerifyOtpViewState extends State<VerifyOtpView> {
   }
 
   void _handleResend() {
-    setState(() {
-      _canResend = false;
-      _timerKey++; // This forces the OtpTimer to restart
-    });
-    // TODO: Call your Cubit resend method here
+    cubit.resendCode();
   }
 
   Widget _buildSubmitButton() {
@@ -207,8 +241,7 @@ class _VerifyOtpViewState extends State<VerifyOtpView> {
   void _submitForm() {
     final bool isValid = _formKey.currentState!.validate();
     if (isValid) {
-      //TODO: call cubit sendResetCode method here
-      context.go(RoutesName.resetPassword); //!temp navigation
+      cubit.verifyOtp(otp: _otpController.text.trim());
     }
   }
 }

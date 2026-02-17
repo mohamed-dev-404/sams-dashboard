@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sams_dashboard/core/enums/password_field_type.dart';
+import 'package:sams_dashboard/core/helper/app_dialogs.dart';
+import 'package:sams_dashboard/core/helper/app_snack_bar.dart';
 import 'package:sams_dashboard/core/models/app_button_style_model.dart';
 import 'package:sams_dashboard/core/utils/colors/app_colors.dart';
 import 'package:sams_dashboard/core/utils/router/routes_name.dart';
 import 'package:sams_dashboard/core/utils/styles/app_styles.dart';
+import 'package:sams_dashboard/core/widgets/app_animated_loading_indicator.dart';
 import 'package:sams_dashboard/core/widgets/app_button.dart';
 import 'package:sams_dashboard/core/widgets/password_text_field.dart';
 import 'package:sams_dashboard/core/widgets/titled_input_field.dart';
+import 'package:sams_dashboard/features/auth/presentation/view_models/password_reset_cubit/password_reset_cubit.dart';
+import 'package:sams_dashboard/features/auth/presentation/view_models/password_reset_cubit/password_reset_state.dart';
 import 'package:sams_dashboard/features/auth/presentation/views/widgets/auth_sider_image.dart';
 
 class ResetPasswordView extends StatefulWidget {
@@ -18,6 +24,8 @@ class ResetPasswordView extends StatefulWidget {
 }
 
 class _ResetPasswordViewState extends State<ResetPasswordView> {
+  late PasswordResetCubit cubit;
+
   late final TextEditingController _newPasswordController;
   late final TextEditingController _confirmPasswordController;
   late final FocusNode _confirmpassFocusNode;
@@ -42,51 +50,78 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    return Scaffold(
-      body: Row(
-        children: [
-          width <= 830
-              ? const SizedBox(
-                  height: double.infinity,
-                )
-              : const AuthSiderImage(),
-          const SizedBox(
-            width: 42,
-          ),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Form(
-                key: _formKey,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 32.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildHeaderText(),
+    cubit = context.read<PasswordResetCubit>();
 
-                      const SizedBox(height: 32),
+    return BlocConsumer<PasswordResetCubit, PasswordResetState>(
+      listener: (context, state) {
+        if (state.status == PasswordResetStatus.failure) {
+          AppSnackBar.error(
+            context,
+            state.errorMessage ?? 'unexpected error, please try again.',
+          );
+        } else if (state.status == PasswordResetStatus.success) {
+          AppDialog.showSuccess(
+            context,
+            title: 'Password Reset Successfully!',
+            message:
+                state.successMessage ??
+                'Your password has been changed. Please log in to continue to your dashboard.',
+            onTap: () {
+              context.go(RoutesName.login);
+            },
+          );
+        }
+      },
+      builder: (context, state) {
+        return Scaffold(
+          body: Row(
+            children: [
+              width <= 830
+                  ? const SizedBox(
+                      height: double.infinity,
+                    )
+                  : const AuthSiderImage(),
+              const SizedBox(
+                width: 42,
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Form(
+                    key: _formKey,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 32.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildHeaderText(),
 
-                      _buildResetPassFields(),
+                          const SizedBox(height: 32),
 
-                      const SizedBox(height: 90),
+                          _buildResetPassFields(),
 
-                      AppButton(
-                        model: AppButtonStyleModel(
-                          label: 'Change Password',
-                          onPressed: () {
-                            _submitForm();
-                          },
-                        ),
+                          const SizedBox(height: 90),
+
+                          (state.status == PasswordResetStatus.loading)
+                              ? const AppAnimatedLoadingIndicator()
+                              : AppButton(
+                                  model: AppButtonStyleModel(
+                                    label: 'Change Password',
+                                    onPressed: () {
+                                      _submitForm();
+                                    },
+                                  ),
+                                ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
               ),
-            ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -134,8 +169,10 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
   void _submitForm() {
     final bool isValid = _formKey.currentState!.validate();
     if (isValid) {
-      //todo call cubit sendResetCode method here
-      context.go(RoutesName.home); //!temp navigation
+      cubit.resetPassword(
+        newPassword: _newPasswordController.text.trim(),
+        confirmPassword: _confirmPasswordController.text.trim(),
+      );
     }
   }
 }
