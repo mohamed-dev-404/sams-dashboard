@@ -84,4 +84,7 @@ abstract class ApiValues {
   static const String admin = 'admin';
   static const String instructor = 'instructor';
   static const String student = 'student';
+
+  //? verify oyp actions
+    static const String resetPassword = 'RESET_PASSWORD';
 }

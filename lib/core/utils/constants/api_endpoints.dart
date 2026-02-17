@@ -19,7 +19,7 @@ class EndPoints {
   static String login = 'auth/login';
   static String refresh = 'auth/refresh';
   static String forgetPassword = 'auth/forgot-password';
-  static String virfyOTP = 'auth/verify-otp';
+  static String verifyOTP = 'auth/verify-otp';
   static String resetPassword = 'auth/reset-password';
   static String resendOTP = 'auth/resend-code';
 }

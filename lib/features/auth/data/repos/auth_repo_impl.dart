@@ -76,7 +76,7 @@ class AuthRepoImpl implements AuthRepo {
     try {
       //hit virfyOTP request
       final Map<String, dynamic> response = await api.post(
-        EndPoints.virfyOTP,
+        EndPoints.verifyOTP,
         data: {
           ApiKeys.academicEmail: email,
           ApiKeys.code: otp,
@@ -128,15 +128,12 @@ class AuthRepoImpl implements AuthRepo {
   Future<Either<String, void>> resendOTP({
     required String email,
     required String action,
-  }) async{
-     try {
+  }) async {
+    try {
       //hit forget password request
       await api.post(
         EndPoints.resendOTP,
-        data: {
-          ApiKeys.academicEmail: email,
-          ApiKeys.action: action 
-        },
+        data: {ApiKeys.academicEmail: email, ApiKeys.action: action},
       );
       return const Right(null); //success case
     } on ApiException catch (e) {
