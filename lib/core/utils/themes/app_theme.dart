@@ -25,8 +25,8 @@ class AppTheme {
               padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 24.w),
               backgroundColor: AppColors.secondary,
               foregroundColor: AppColors.whiteLight,
-              disabledBackgroundColor: AppColors.primaryLight,
-              disabledForegroundColor: AppColors.primaryDark,
+              disabledBackgroundColor: AppColors.whiteHover,
+              disabledForegroundColor: AppColors.whiteDarker,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15.r),
               ),
@@ -36,7 +36,7 @@ class AppTheme {
                 (states) {
                   if (states.contains(WidgetState.disabled)) {
                     return const BorderSide(
-                      color: AppColors.secondaryLightActive,
+                      color: AppColors.whiteHover,
                       width: 1,
                     );
                   }

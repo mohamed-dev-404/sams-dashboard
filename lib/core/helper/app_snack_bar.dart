@@ -93,7 +93,7 @@ class AppSnackBar {
   static Future<void> error(
     BuildContext context,
     String message, {
-    Duration duration = const Duration(seconds: 2),
+    Duration duration = const Duration(seconds: 4),
   }) => show(context, message, type: SnackBarType.error, duration: duration);
 
   /// Shows a warning SnackBar

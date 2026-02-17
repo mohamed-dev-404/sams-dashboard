@@ -93,6 +93,8 @@ class AppTextField extends StatelessWidget {
             return AppValidators.validateName(value);
           case TextFieldType.normal:
             return AppValidators.validateNotEmpty(value);
+          case TextFieldType.email:
+            return AppValidators.validateEmail(value);
         }
       },
     );
