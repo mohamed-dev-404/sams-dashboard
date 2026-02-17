@@ -1,6 +1,6 @@
 enum UserRole {
   admin('Admin'),
-  instructor('instructor'),
+  instructor('Instructor'),
   student('Student')
   ;
 

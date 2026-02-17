@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:sams_dashboard/core/utils/assets/app_icons.dart';
 import 'package:sams_dashboard/core/utils/colors/app_colors.dart';
+import 'package:sams_dashboard/core/utils/configs/size_config.dart';
 import 'package:sams_dashboard/core/utils/styles/app_styles.dart';
 import 'package:sams_dashboard/features/home/data/enum/user_role.dart';
 import 'package:sams_dashboard/features/home/data/enum/user_status.dart';
-import 'package:sams_dashboard/features/home/presentation/views/widgets/custom_popup_menu_button.dart';
+import 'package:sams_dashboard/features/home/presentation/views/widgets/filters/custom_popup_menu_button.dart';
 
 class UsersFiltersRow extends StatelessWidget {
   const UsersFiltersRow({
     super.key,
 
     // Search
-    this.onSearchChanged,
+    this.onSubmitted,
 
     // Add user
     this.onAddUserPressed,
@@ -26,51 +27,100 @@ class UsersFiltersRow extends StatelessWidget {
 
     // Clear
     this.onClearFilters,
+    required this.controller,
   });
 
-  final ValueChanged<String>? onSearchChanged;
+  final ValueChanged<String>? onSubmitted;
   final VoidCallback? onAddUserPressed;
   final UserRole? selectedRole;
   final ValueChanged<UserRole>? onRoleSelected;
   final UserStatus? selectedStatus;
   final ValueChanged<UserStatus>? onStatusSelected;
   final VoidCallback? onClearFilters;
+  final TextEditingController controller;
 
   @override
   Widget build(BuildContext context) {
+    final w = MediaQuery.of(context).size.width;
     return Container(
       padding: const EdgeInsets.all(16),
       color: AppColors.primaryLight,
-      child: Row(
-        children: [
-          _UsersSearchField(onChanged: onSearchChanged),
-          const SizedBox(width: 12),
-          _AddUserButton(onPressed: onAddUserPressed),
-          const SizedBox(width: 8),
-          _RoleFilter(selectedRole: selectedRole, onSelected: onRoleSelected),
-          const SizedBox(width: 8),
-          _StatusFilter(
-            selectedStatus: selectedStatus,
-            onSelected: onStatusSelected,
-          ),
-          const SizedBox(width: 8),
-          ClearFiltersButton(onPressed: onClearFilters),
-        ],
-      ),
+      child: w > SizeConfig.kSmallWebLayoutbreakPoint
+          ? Row(
+              children: [
+                _UsersSearchField(
+                  onSubmitted: onSubmitted,
+                  controller: controller,
+                ),
+                const SizedBox(width: 12),
+                _AddUserButton(onPressed: onAddUserPressed),
+                const SizedBox(width: 8),
+                _RoleFilter(
+                  selectedRole: selectedRole,
+                  onSelected: onRoleSelected,
+                ),
+                const SizedBox(width: 8),
+                _StatusFilter(
+                  selectedStatus: selectedStatus,
+                  onSelected: onStatusSelected,
+                ),
+                const SizedBox(width: 8),
+                ClearFiltersButton(onPressed: onClearFilters),
+              ],
+            )
+          : Column(
+              children: [
+                SizedBox(
+                  height: 50,
+                  child: Row(
+                    children: [
+                      _UsersSearchField(
+                        onSubmitted: onSubmitted,
+                        controller: controller,
+                      ),
+                      const SizedBox(width: 8),
+                      ClearFiltersButton(onPressed: onClearFilters),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: _AddUserButton(onPressed: onAddUserPressed),
+                    ),
+                    const SizedBox(width: 8),
+                    _RoleFilter(
+                      selectedRole: selectedRole,
+                      onSelected: onRoleSelected,
+                    ),
+                    const SizedBox(width: 8),
+                    _StatusFilter(
+                      selectedStatus: selectedStatus,
+                      onSelected: onStatusSelected,
+                    ),
+                  ],
+                ),
+              ],
+            ),
     );
   }
 }
 
 class _UsersSearchField extends StatelessWidget {
-  const _UsersSearchField({this.onChanged});
+  const _UsersSearchField({this.onSubmitted, required this.controller});
 
-  final ValueChanged<String>? onChanged;
+  final ValueChanged<String>? onSubmitted;
+  final TextEditingController controller;
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: TextField(
-        onChanged: onChanged,
+        controller: controller,
+        onSubmitted: onSubmitted,
+        textInputAction: TextInputAction.search,
         decoration: const InputDecoration(
           hintText: 'Search',
           prefixIcon: Icon(Icons.search),

@@ -23,4 +23,15 @@ class UserResponseModel {
       pagination: UserPaginationModel.fromJson(json[ApiKeys.pagination]),
     );
   }
+
+  UserResponseModel copyWith({
+    List<UserModel>? users,
+    UserPaginationModel? pagination,
+  }) {
+    return UserResponseModel(
+      users: users ?? this.users,
+      pagination: pagination ?? this.pagination,
+      status: status,
+    );
+  }
 }

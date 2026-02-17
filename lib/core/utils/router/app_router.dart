@@ -11,6 +11,7 @@ import 'package:sams_dashboard/features/auth/data/repos/auth_repo.dart';
 import 'package:sams_dashboard/features/auth/presentation/view_models/login_cubit/login_cubit.dart';
 import 'package:sams_dashboard/features/auth/presentation/view_models/password_reset_cubit/password_reset_cubit.dart';
 import 'package:sams_dashboard/features/home/data/repos/home_repo.dart';
+import 'package:sams_dashboard/features/home/presentation/view_models/add_user/add_user_cubit.dart';
 import 'package:sams_dashboard/features/home/presentation/view_models/home_cubit/home_cubit.dart';
 
 // Views
@@ -76,14 +77,17 @@ class AppRouter {
         path: RoutesName.home,
         builder: (context, state) => BlocProvider(
           lazy: false,
-          create: (context) => HomeCubit(getIt<HomeRepo>())..getUsers(),
+          create: (context) => HomeCubit(getIt<HomeRepo>())..initHome(),
           child: const HomeView(),
         ),
       ),
       buildRoute(
         name: RoutesName.addUser,
         path: RoutesName.addUser,
-        builder: (context, state) => const AddUserView(),
+        builder: (context, state) => BlocProvider(
+          create: (context) => AddUserCubit(getIt<HomeRepo>()),
+          child: AddUserView(),
+        ),
       ),
     ],
   );

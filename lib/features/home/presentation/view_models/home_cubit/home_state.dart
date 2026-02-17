@@ -1,35 +1,33 @@
 part of 'home_cubit.dart';
 
-@immutable
+//* 1. Base State
 sealed class HomeState {}
 
-class HomeInitial extends HomeState {}
+final class HomeInitial extends HomeState {}
 
-// General Page Loading (Initial fetch)
-class HomeLoading extends HomeState {}
+final class HomeLoading extends HomeState {}
 
-// Success state for fetching the list
-class HomeSuccess extends HomeState {
+final class HomeFailure extends HomeState {
+  final String errorMessage;
+  HomeFailure(this.errorMessage);
+}
+
+final class HomeSuccess extends HomeState {
   final UserResponseModel userResponse;
   HomeSuccess({required this.userResponse});
 }
 
-// Global failure (Page load failed)
-class HomeFailure extends HomeState {
-  final String errMessage;
-  HomeFailure(this.errMessage);
-}
+//* 2. Side Effects States
+sealed class HomeActionState extends HomeState {}
 
-// Action States (For Create, Toggle, Change Role)
-class HomeActionLoading extends HomeState {}
+final class HomeActionLoading extends HomeActionState {}
 
-class HomeActionSuccess extends HomeState {
+final class HomeActionSuccess extends HomeActionState {
   final String message;
   HomeActionSuccess(this.message);
 }
 
-class HomeActionFailure extends HomeState {
-  final String errMessage;
-  HomeActionFailure(this.errMessage);
+final class HomeActionFailure extends HomeActionState {
+  final String errorMessage;
+  HomeActionFailure(this.errorMessage);
 }
-

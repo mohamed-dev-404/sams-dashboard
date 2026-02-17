@@ -33,4 +33,25 @@ class FetchUsersParams {
 
     return data;
   }
+
+  FetchUsersParams copyWith({
+    int? page,
+    int? size,
+    String? roleId,
+    String? search,
+    String? status,
+    String? sortBy,
+    String? sortOrder,
+    bool clearSearch = false,
+  }) {
+    return FetchUsersParams(
+      page: page ?? this.page,
+      size: size ?? this.size,
+      roleId: roleId ?? this.roleId,
+      search: clearSearch ? null : (search ?? this.search),
+      status: status ?? this.status,
+      sortBy: sortBy ?? this.sortBy,
+      sortOrder: sortOrder ?? this.sortOrder,
+    );
+  }
 }

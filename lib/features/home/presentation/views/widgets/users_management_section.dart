@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:sams_dashboard/core/helper/app_snack_bar.dart';
 import 'package:sams_dashboard/core/utils/colors/app_colors.dart';
 import 'package:sams_dashboard/core/utils/styles/app_styles.dart';
+import 'package:sams_dashboard/core/widgets/app_animated_loading_indicator.dart';
 import 'package:sams_dashboard/features/home/presentation/view_models/home_cubit/home_cubit.dart';
-import 'package:sams_dashboard/features/home/presentation/views/widgets/users_filters_section.dart';
-import 'package:sams_dashboard/features/home/presentation/views/widgets/users_table_section.dart';
+import 'package:sams_dashboard/features/home/presentation/views/widgets/users_table/table_pagination_bar.dart';
+import 'package:sams_dashboard/features/home/presentation/views/widgets/filters/users_filters_section.dart';
+import 'package:sams_dashboard/features/home/presentation/views/widgets/users_table/users_table_section.dart';
 
 //*) Users management main section (Filters + Table + Pagination)
 class UsersManagementSection extends StatelessWidget {
@@ -21,14 +24,20 @@ class UsersManagementSection extends StatelessWidget {
           top: Radius.circular(16.r),
         ),
       ),
-      child: BlocBuilder<HomeCubit, HomeState>(
+      child: BlocConsumer<HomeCubit, HomeState>(
+        buildWhen: (previous, current) =>
+            current is HomeSuccess ||
+            current is HomeLoading ||
+            current is HomeFailure,
+
+        listenWhen: (previous, current) => current is HomeActionState,
+
         builder: (context, state) {
           if (state is HomeLoading) {
-            return const Dialog(
-              backgroundColor: Colors.transparent,
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
+            return const AppAnimatedLoadingIndicator();
+          } else if (state is HomeFailure) {
+            return Center(
+              child: Text(state.errorMessage),
             );
           } else if (state is HomeSuccess) {
             return Column(
@@ -47,28 +56,30 @@ class UsersManagementSection extends StatelessWidget {
                 SizedBox(height: 24.h),
 
                 //*) Pagination Bar Section
-                // TablePaginationBar(
-                //   totalItems: state.userResponse.pagination.totalElements,
-                //   currentPage: state.userResponse.pagination.currentPage,
-                //   rowsPerPage: state.userResponse.pagination.size,
-                //   onRowsPerPageChanged: (newRows) {
-                //     context.read<HomeCubit>().updatePagination(limit: newRows, page: 1);
-                //     //! Reset page when rows-per-page changes
-                //     state.userResponse.pagination.size = newRows;
-                //     state.userResponse.pagination.currentPage = 1;
-                //   },
-                //   onPageChanged: (newPage) {
-                //     state.userResponse.pagination.currentPage = newPage;
-                //   },
-                // ),
+                TablePaginationBar(
+                  userPaginationModel: state.userResponse.pagination,
+                ),
               ],
             );
-          } else if (state is HomeFailure) {
-            return Center(
-              child: Text(state.errMessage),
+          }
+
+          return const SizedBox.shrink();
+        },
+        listener: (context, state) {
+          if (state is HomeActionFailure) {
+            AppSnackBar.error(
+              context,
+              state.errorMessage,
+              duration: const Duration(
+                seconds: 4,
+              ),
             );
-          } else {
-            return const SizedBox.shrink();
+          }
+          if (state is HomeActionSuccess) {
+            AppSnackBar.success(
+              context,
+              state.message,
+            );
           }
         },
       ),
