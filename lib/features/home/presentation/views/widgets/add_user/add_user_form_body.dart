@@ -179,8 +179,16 @@ class AddUserFormBodyState extends State<AddUserFormBody> {
         roleId: _selectedRole?.name ?? '',
         password: _passwordController.text,
       );
-
       context.read<AddUserCubit>().createUser(params);
     }
+  }
+
+  void resetForm() {
+    _formKey.currentState?.reset();
+    _nameController.clear();
+    _emailController.clear();
+    _iDController.clear();
+    _passwordController.clear();
+    setState(() => _selectedRole = null);
   }
 }

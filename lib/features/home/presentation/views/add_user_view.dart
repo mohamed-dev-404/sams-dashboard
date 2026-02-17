@@ -20,6 +20,7 @@ class AddUserView extends StatelessWidget {
       body: BlocConsumer<AddUserCubit, AddUserState>(
         listener: (context, state) {
           if (state is AddUserSuccess) {
+            _formKey.currentState?.resetForm();
             AppDialog.showSuccess(
               context,
               title: 'success',
