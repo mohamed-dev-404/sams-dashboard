@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sams_dashboard/core/enums/password_field_type.dart';
 import 'package:sams_dashboard/core/enums/text_field_type.dart';
+import 'package:sams_dashboard/core/helper/app_snack_bar.dart';
 import 'package:sams_dashboard/core/models/app_button_style_model.dart';
 import 'package:sams_dashboard/core/utils/assets/app_icons.dart';
 import 'package:sams_dashboard/core/utils/colors/app_colors.dart';
 import 'package:sams_dashboard/core/utils/router/routes_name.dart';
 import 'package:sams_dashboard/core/utils/styles/app_styles.dart';
+import 'package:sams_dashboard/core/widgets/app_animated_loading_indicator.dart';
 import 'package:sams_dashboard/core/widgets/app_button.dart';
 import 'package:sams_dashboard/core/widgets/app_text_field.dart';
 import 'package:sams_dashboard/core/widgets/password_text_field.dart';
 import 'package:sams_dashboard/core/widgets/svg_icon.dart';
 import 'package:sams_dashboard/core/widgets/titled_input_field.dart';
+import 'package:sams_dashboard/features/auth/presentation/view_models/login_cubit/login_cubit.dart';
+import 'package:sams_dashboard/features/auth/presentation/view_models/login_cubit/login_state.dart';
 import 'package:sams_dashboard/features/auth/presentation/views/widgets/auth_sider_image.dart';
 
 class LoginView extends StatefulWidget {
@@ -46,59 +51,73 @@ class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    return Scaffold(
-      body: Row(
-        children: [
-          width <= 830
-              ? const SizedBox(
-                  height: double.infinity,
-                )
-              : const AuthSiderImage(),
-          const SizedBox(
-            width: 42,
-          ),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Form(
-                key: _formKey,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 32.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildHeaderText(),
+    return BlocConsumer<LoginCubit, LoginState>(
+      listener: (context, state) {
+        if (state is LoginFailure) {
+          AppSnackBar.error(context, state.errorMessage);
+        } else if (state is LoginSuccess) {
+          context.go(RoutesName.home); //navigate to home
+        }
+      },
 
-                      const SizedBox(height: 32),
+      builder: (context, state) {
+        return Scaffold(
+          body: Row(
+            children: [
+              width <= 830
+                  ? const SizedBox(
+                      height: double.infinity,
+                    )
+                  : const AuthSiderImage(),
+              const SizedBox(
+                width: 42,
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Form(
+                    key: _formKey,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 32.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildHeaderText(),
 
-                      _buildEmailField(),
+                          const SizedBox(height: 32),
 
-                      const SizedBox(height: 16),
+                          _buildEmailField(),
 
-                      _buildPasswordField(),
+                          const SizedBox(height: 16),
 
-                      const SizedBox(height: 16),
+                          _buildPasswordField(context),
 
-                      _buildForgetPassButton(),
+                          const SizedBox(height: 16),
 
-                      const SizedBox(height: 90),
+                          _buildForgetPassButton(),
 
-                      AppButton(
-                        model: AppButtonStyleModel(
-                          label: 'Log In',
-                          onPressed: () {
-                            _submitForm();
-                          },
-                        ),
+                          const SizedBox(height: 90),
+
+                          (state is LoginLoading)
+                              ? const AppAnimatedLoadingIndicator()
+                              : AppButton(
+                                  model: AppButtonStyleModel(
+                                    label: 'Log In',
+                                    onPressed: () {
+                                      _submitForm(context);
+                                    },
+                                  ),
+                                ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
               ),
-            ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -128,7 +147,7 @@ class _LoginViewState extends State<LoginView> {
     );
   }
 
-  Widget _buildPasswordField() {
+  Widget _buildPasswordField(BuildContext myContext) {
     return TitledInputField(
       label: 'Password',
       child: AppPasswordField(
@@ -137,7 +156,7 @@ class _LoginViewState extends State<LoginView> {
         hintText: 'Enter your password',
         passwordFieldType: PasswordFieldType.originalPassword,
         onFieldSubmitted: (_) {
-          _submitForm();
+          _submitForm(myContext);
         },
       ),
     );
@@ -160,10 +179,14 @@ class _LoginViewState extends State<LoginView> {
     );
   }
 
-  void _submitForm() {
+  void _submitForm(BuildContext myContext) {
     final bool isValid = _formKey.currentState!.validate();
+    final cubit = myContext.read<LoginCubit>();
     if (isValid) {
-      //todo call cubit login method here
+      cubit.login(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
     }
   }
 }

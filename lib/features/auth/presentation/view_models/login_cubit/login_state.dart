@@ -1,12 +1,17 @@
-abstract class LoginState {}
+import 'package:sams_dashboard/features/auth/data/models/login_model/login_model.dart';
+
+sealed class LoginState {}
 
 class LoginInitial extends LoginState {}
+
 class LoginLoading extends LoginState {}
+
 class LoginSuccess extends LoginState {
-  final dynamic user; //todo Replace with real UserModel
-  LoginSuccess(this.user);
+  final LoginModel loginModel;
+  LoginSuccess(this.loginModel);
 }
+
 class LoginFailure extends LoginState {
-  final String message;
-  LoginFailure(this.message);
+  final String errorMessage;
+  LoginFailure(this.errorMessage);
 }
